@@ -1,0 +1,64 @@
+.home {
+    padding: 2rem;
+    font-family: sans-serif;
+    max-width: 1200px;
+    margin: 0 auto;
+    box-sizing: border-box;
+  }
+  .top-bar {
+    width: 100%;
+    background-color: #2c3e50;
+    color: white;
+    padding: 1rem 2rem;
+    display: flex;
+    align-items: center;
+    box-sizing: border-box;
+  }
+  
+
+.top-bar h1 {
+  margin: 0;
+  font-size: 1.5rem;
+  margin-right: 100px;
+}
+
+.top-bar nav {
+  display: flex;
+  gap: 1.5rem;
+}
+
+.top-bar nav a {
+  color: white;
+  text-decoration: none;
+  font-weight: bold;
+  transition: color 0.2s ease-in-out;
+}
+
+.top-bar nav a:hover {
+  color: #f39c12;
+}
+
+.search-bar {
+    padding: 0.4rem 0.8rem;
+    font-size: 1rem;
+    border-radius: 6px;
+    border: none;
+    outline: none;
+    max-width: 200px;
+    background-color: #fff;
+    color: #333;
+    margin-left: 50px;
+  }
+
+  
+  .animal-list {
+    list-style-type: none;
+    padding: 0;
+  }
+  
+  .animal-list li {
+    margin-bottom: 1rem;
+    padding: 0.5rem;
+    border-bottom: 1px solid #ccc;
+  }
+  
