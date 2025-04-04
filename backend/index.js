@@ -30,6 +30,33 @@ app.get('/animals', (req, res) => {
   });
 });
 
+app.post('/animals', (req, res) => {
+  const {Name, Species, Age, Gender} = req.body;
+  console.log("incoming animal data: ", req.body);
+  const query = 'INSERT INTO Animal (Name,Species,Age,Gender) VALUES (?,?,?,?)';
+
+  db.query(query, [Name,Species,Age,Gender], (err,result) => {
+    if(err){
+      console.error("Error inserting", err);
+      return res.status(500).send('Insert failed');
+    }
+    res.status(201).json({id: result.insertId});
+  });
+});
+
+app.delete('/animals/:id', (req, res) => {
+  const animalId = req.params.id;
+  console.log("incoming delete", animalId);
+  db.query(`DELETE FROM Animal WHERE AnimalID = ?`, [animalId], (err, result) => {
+    if (err) {
+      console.error('Error deleting animal:', err);
+      return res.status(500).send('Delete failed');
+    }
+    console.log(`🐾 Deleting Animal ID:`, animalId, typeof animalId);
+
+    res.status(200).send('Animal deleted');
+  });
+});
 
 
 app.listen(PORT, () => {
