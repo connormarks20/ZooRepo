@@ -131,7 +131,7 @@ app.delete('/visitors/:id', (req, res) => {
       console.error('Error deleting animal:', err);
       return res.status(500).send('Delete failed');
     }
-    console.log(` Deleting Animal ID:`, visitorID, typeof visitorID);
+    console.log(` Deleting Visitor ID:`, visitorID, typeof visitorID);
 
     res.status(200).send('Visitor history deleted');
   });

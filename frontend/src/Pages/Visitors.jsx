@@ -71,7 +71,7 @@ function Visitors() {
   return (
     <>
       <div className="top-bar">
-        <h1>🧍‍♂️🧍‍♀️ Zoo Visitors Database 🧍‍♀️🧍‍♂️</h1>
+        <h1>🐧 🐻 🐨 Zoological DB 🦁 🐒 🦓 </h1>
 
         <nav className="nav-links">
           <a href="/">Home</a>
@@ -90,7 +90,7 @@ function Visitors() {
       </div>
 
       <div className="visitor-page">
-        <h1>🎟️ Welcome to the Visitor Records 🎟️</h1>
+        <h1>🧍‍♂️🧍‍♀️ Zoo Visitors Database 🧍‍♀️🧍‍♂️</h1>
         {message && <div className="status-message">{message}</div>}
 
         <div className="visitor-list-header">
@@ -148,7 +148,7 @@ function Visitors() {
         <ul className="visitor-list">
           {visitors.map(visitor => (
             <li key={visitor.VisitorID}>
-              <strong>{visitor.VisitorID} {visitor.Name}</strong> - Group {visitor.GroupID || 'N/A'}, 
+              <strong>{visitor.VisitorID || '101191'} {visitor.Name}</strong> - Group {visitor.GroupID || 'N/A'}, 
               visited on {visitor.DateOfVisit}, spent ${visitor.AmountSpent || '0.00'}, 
               History: {visitor.History || 'N/A'}, 
               Membership: {visitor.MembershipType || 'None'}
