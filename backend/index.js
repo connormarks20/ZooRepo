@@ -79,6 +79,64 @@ app.get('/animals', (req, res) => {
 });
 */
 
+/* function for entering data into the top search bar */
+app.get('/visitors', (req, res) => {
+  const search = req.query.search || '';
+
+  let query = 'SELECT * FROM Visitors';
+  let params = [];
+
+  if (search) {
+    query += ' WHERE Name LIKE ? OR VisitorID LIKE ? OR GroupID Like ?';
+    const searchTerm = `%${search}%`;
+    params = [searchTerm, searchTerm];
+  }
+
+  db.query(query, params, (err, results) => {
+    if (err) {
+      console.error('error quering db', err);
+      return res.status(500).send('internal error');
+    }
+    res.json(results);
+  });
+});
+
+/* function for adding animals to the database */
+app.post('/visitors', (req, res) => {
+  const {VisitorID,
+    Name,
+    GroupID,
+    DateOfVisit,
+    AmountSpent,
+    History,
+    MembershipType} = req.body; // Just adding name, species, age, and gender for now. can include more later 
+  console.log("incoming visitor data: ", req.body);
+  const query = 'INSERT INTO Visitors (Name,GroupID,DateOfVisit,AmountSpent,History, MembershipType) VALUES (?,?,?,?,?,?)';
+
+  db.query(query, [Name,GroupID,DateOfVisit,AmountSpent,History, MembershipType], (err,result) => {
+    if(err){
+      console.error("Error inserting", err);
+      return res.status(500).send('Insert failed');
+    }
+    res.status(201).json({id: result.insertId});
+  });
+});
+
+/* function for deleting visitors from db by id. (pk) */
+app.delete('/visitors/:id', (req, res) => {
+  const visitorID = req.params.id;
+  console.log("incoming delete", visitorID);
+  db.query(`DELETE FROM Visitors WHERE VisitorID = ?`, [visitorID], (err, result) => {
+    if (err) {
+      console.error('Error deleting animal:', err);
+      return res.status(500).send('Delete failed');
+    }
+    console.log(` Deleting Animal ID:`, visitorID, typeof visitorID);
+
+    res.status(200).send('Visitor history deleted');
+  });
+});
+
 app.listen(PORT, () => {
   console.log(`Server listening on port ${PORT}`);
 });
