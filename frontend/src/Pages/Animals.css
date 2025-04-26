@@ -1,0 +1,44 @@
+.animals-admin .admin-animal-list {
+    list-style-type: none;
+    padding: 0;
+  }
+  
+  .animals-admin .admin-animal-list li {
+    background: white;
+    padding: 12px 20px;
+    margin-bottom: 10px;
+    border: 1px solid #ddd;
+    border-radius: 8px;
+    text-align: left;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+  }
+  .animals-admin .animal-list li {
+    background: white;
+    padding: 12px 20px;
+    margin-bottom: 10px;
+    border: 1px solid #ddd;
+    border-radius: 8px;
+    text-align: left;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+  }
+  
+  .delete-button {
+    background-color: #ff5252;
+    color: white;
+    border: none;
+    padding: 6px 12px;
+    border-radius: 6px;
+    cursor: pointer;
+    font-weight: bold;
+    transition: all 0.2s ease-in-out; /* add transition on normal state too */
+  }
+  
+  .delete-button:hover {
+    background-color: #ff0000; /* intense red when hovered */
+    transform: scale(1.05); /* slightly bigger on hover */
+  }
+  

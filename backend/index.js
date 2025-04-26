@@ -33,11 +33,11 @@ app.get('/animals', (req, res) => {
 
 /* function for adding animals to the database */
 app.post('/animals', (req, res) => {
-  const {Name, Species, Age, Gender} = req.body; // Just adding name, species, age, and gender for now. can include more later 
+  const {Name, Species, Age, Gender, ImageURL} = req.body; // Just adding name, species, age, and gender for now. can include more later 
   console.log("incoming animal data: ", req.body);
-  const query = 'INSERT INTO Animal (Name,Species,Age,Gender) VALUES (?,?,?,?)';
+  const query = 'INSERT INTO Animal (Name,Species,Age,Gender,ImageURL) VALUES (?,?,?,?,?)';
 
-  db.query(query, [Name,Species,Age,Gender], (err,result) => {
+  db.query(query, [Name,Species,Age,Gender,ImageURL], (err,result) => {
     if(err){
       console.error("Error inserting", err);
       return res.status(500).send('Insert failed');
@@ -61,6 +61,23 @@ app.delete('/animals/:id', (req, res) => {
   });
 });
 
+/* function for the animals page to get each animal and the corresponding data from the database */
+/*
+app.get('/animals', (req, res) => {
+  console.log("Getting animal data");
+
+  const query = 'SELECT * FROM Animal';
+
+  db.query(query, (err, result) => {
+    if (err) {
+      console.error('Error fetching animals:', err);
+      return res.status(500).json({ error: 'Failed to retrieve animal data' });
+    }
+
+    res.json(result); // Send the data back to frontend
+  });
+});
+*/
 
 app.listen(PORT, () => {
   console.log(`Server listening on port ${PORT}`);
