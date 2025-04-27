@@ -98,13 +98,6 @@ function Visitors() {
           <form className="add-form" onSubmit={handleAddVisitor}>
             <input
               type="text"
-              placeholder="Visitor ID"
-              value={newVisitor.VisitorID}
-              onChange={(e) => setNewVisitor({ ...newVisitor, VisitorID: e.target.value })}
-              required
-            />
-            <input
-              type="text"
               placeholder="Name"
               value={newVisitor.Name}
               onChange={(e) => setNewVisitor({ ...newVisitor, Name: e.target.value })}
@@ -145,17 +138,37 @@ function Visitors() {
           </form>
         </div>
 
+
         <ul className="visitor-list">
-          {visitors.map(visitor => (
-            <li key={visitor.VisitorID}>
-              <strong>{visitor.VisitorID || '101191'} {visitor.Name}</strong> - Group {visitor.GroupID || 'N/A'}, 
-              visited on {visitor.DateOfVisit}, spent ${visitor.AmountSpent || '0.00'}, 
-              History: {visitor.History || 'N/A'}, 
-              Membership: {visitor.MembershipType || 'None'}
-              <button className="delete-button" onClick={() => handleDelete(visitor.VisitorID)}>❌ Delete</button>
-            </li>
-          ))}
-        </ul>
+  {visitors.map(visitor => (
+    <li key={visitor.VisitorID} className="visitor-item">
+      <div className="visitor-attributes">
+        <strong>ID:</strong> {visitor.VisitorID}
+      </div>
+      <div className="visitor-attributes">
+        <strong>Name:</strong> {visitor.Name}
+      </div>
+      <div className="visitor-attributes">
+        <strong>Group:</strong> {visitor.GroupID || 'N/A'}
+      </div>
+      <div className="visitor-attributes">
+        <strong>Date Visited:</strong> {new Date(visitor.DateOfVisit).toLocaleDateString()}
+      </div>
+      <div className="visitor-attributes">
+        <strong>Amount Spent:</strong> ${visitor.AmountSpent || '0.00'}
+      </div>
+      <div className="visitor-attributes">
+        <strong>History:</strong> {visitor.History || 'N/A'}
+      </div>
+      <div className="visitor-attributes">
+        <strong>Membership:</strong> {visitor.MembershipType || 'None'}
+      </div>
+      <button className="delete-button" onClick={() => handleDelete(visitor.VisitorID)}>❌ Delete</button>
+    </li>
+  ))}
+</ul>
+
+
       </div>
     </>
   );

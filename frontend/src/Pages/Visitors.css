@@ -1,44 +1,73 @@
-.visitors-admin .admin-visitors-list {
-    list-style-type: none;
-    padding: 0;
+   
+  
+  .visitor-list-header-row div {
+    padding: 4px 6px;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
   }
   
-  .visitors-admin .admin-visitors-list li {
-    background: white;
-    padding: 12px 20px;
-    margin-bottom: 10px;
-    border: 1px solid #ddd;
-    border-radius: 8px;
-    text-align: left;
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-  }
-  .visitors-admin .visitors-list li {
-    background: white;
-    padding: 12px 20px;
-    margin-bottom: 10px;
-    border: 1px solid #ddd;
-    border-radius: 8px;
-    text-align: left;
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
+  .visitor-list {
+    padding-left: 0;
   }
   
-  .delete-button {
-    background-color: #ff5252;
-    color: white;
-    border: none;
-    padding: 6px 12px;
+  .visitor-list li {
+    display: grid;
+    grid-template-columns: 1fr 2fr 2fr 2fr 2fr 4fr 2fr 0.7fr;
+    column-gap: 20px; /* 👈 added */
+    align-items: center;
+    padding: 8px 16px;
+    border: 1px solid #ddd;
     border-radius: 6px;
-    cursor: pointer;
-    font-weight: bold;
-    transition: all 0.2s ease-in-out; /* add transition on normal state too */
+    background: white;
+    margin-bottom: 8px;
+    font-size: 14px;
+    width: 98%;
+    list-style: none;
+    letter-spacing: 1px; /* Adds space between characters */
+
   }
   
-  .delete-button:hover {
-    background-color: #ff0000; /* intense red when hovered */
-    transform: scale(1.05); /* slightly bigger on hover */
-  }
-  
+   .visitors-admin .admin-visitors-list,
+.visitors-admin .visitors-list {
+  list-style-type: none;
+  padding: 0;
+  margin: 0;
+  width: 100%;
+}
+
+.visitors-admin .admin-visitors-list li,
+.visitors-admin .visitors-list li {
+  display: grid;
+  grid-template-columns: 1fr 2fr 1fr 2fr 2fr 2fr 1fr auto;
+  background: white;
+  padding: 12px 20px;
+  margin-bottom: 8px;
+  border: 1px solid #ddd;
+  border-radius: 6px;
+  align-items: center;
+  text-align: left;
+  font-size: 14px;
+}
+
+.visitors-admin .admin-visitors-list li strong,
+.visitors-admin .visitors-list li strong {
+  font-weight: 600;
+}
+
+.delete-button {
+  background-color: #ff5252;
+  color: white;
+  border: none;
+  padding: 6px 12px;
+  border-radius: 6px;
+  cursor: pointer;
+  font-weight: bold;
+  transition: all 0.2s ease-in-out;
+  justify-self: end;
+}
+
+.delete-button:hover {
+  background-color: #ff0000;
+  transform: scale(1.05);
+}
