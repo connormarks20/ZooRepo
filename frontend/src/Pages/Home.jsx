@@ -8,7 +8,7 @@ function Home() {
   const [searchItem, setSearchItem] = useState([]);
   const [expandedId, setExpandedId] = useState([]);
   const [visitors, setVisitors] = useState([]);
-    const [searchVisitor, setSearchVisitor] = useState('');
+  const [searchVisitor, setSearchVisitor] = useState('');
   
   useEffect(() => {
     axios

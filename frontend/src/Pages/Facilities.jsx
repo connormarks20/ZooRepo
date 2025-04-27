@@ -73,14 +73,14 @@ function Facilities() {
   return (
     <>
       <div className="top-bar">
-        <h1>🏛️ 🦁 Zoo Facilities Database 🏛️</h1>
+        <h1>🐧 🐻 🐨 Zoological DB 🦁 🐒 🦓</h1>
 
         <nav className="nav-links">
-          <a href="/">Home</a>
-          <a href="/animals">Animals</a>
-          <a href="/staff">Staff</a>
-          <a href="/visitors">Visitors</a>
-          <a href="/facilities">Facilities</a>
+            <Link to="/">Home</Link>
+            <Link to="/animals">Animals</Link>
+            <Link to="/staff">Staff</Link>
+            <Link to="/visitors">Visitors</Link>
+            <Link to="/facilities">Facilities</Link>
         </nav>
 
         <input
@@ -93,7 +93,7 @@ function Facilities() {
       </div>
 
       <div className="facilities-page">
-        <h1>🏢 Facility Management 🏢</h1>
+        <h1>🏢 Facilities Database 🏢</h1>
         {message && <div className="status-message">{message}</div>}
 
         <div className="facilities-list-header">
@@ -131,24 +131,24 @@ function Facilities() {
         </div>
 
         <ul className="facilities-list">
-          {facilitiesList.map(facility => (
-            <li key={facility.Name} className="facilities">
-              <div className="facility-attributes">
-                <strong>Type:</strong> {facility.Type}
-              </div>
-              <div className="facility-attributes">
-                <strong>Name:</strong> {facility.Name}
-              </div>
-              <div className="facility-attributes">
-                <strong>Location:</strong> {facility.Location}
-              </div>
-              <div className="facility-attributes">
-                <strong>Description:</strong> {facility.Description || 'N/A'}
-              </div>
-              <button className="delete-button" onClick={() => handleDelete(facility.Name)}>❌ Delete</button>
-            </li>
-          ))}
-        </ul>
+        {facilitiesList.map(facility => (
+        <li key={facility.Name} className="facility-row">
+            <div className="facility-column">
+            <strong>Type:</strong> {facility.Type}
+            </div>
+            <div className="facility-column">
+            <strong>Name:</strong> {facility.Name}
+            </div>
+            <div className="facility-column">
+            <strong>Location:</strong> {facility.Location}
+            </div>
+            <div className="facility-column">
+            <strong>Description:</strong> {facility.Description || 'N/A'}
+            </div>
+            <button className="delete-button" onClick={() => handleDelete(facility.Name)}>❌ Delete</button>
+        </li>
+    ))}
+  </ul>
       </div>
     </>
   );

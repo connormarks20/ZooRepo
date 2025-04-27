@@ -75,11 +75,11 @@ function Visitors() {
         <h1>🐧 🐻 🐨 Zoological DB 🦁 🐒 🦓 </h1>
 
         <nav className="nav-links">
-          <a href="/">Home</a>
-          <a href="/animals">Animals</a>
-          <a href="/staff">Staff</a>
-          <a href="/visitors">Visitors</a>
-          <a href="/visitors">Facilities</a> 
+          <Link to="/">Home</Link> {/* Use Link here */}
+          <Link to="/animals">Animals</Link>
+          <Link to="/staff">Staff</Link>
+          <Link to="/visitors">Visitors</Link> {/* Use Link here */}
+          <Link to="/facilities">Facilities</Link> {/* Use Link here */}
         </nav>
 
         <input
