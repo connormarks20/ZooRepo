@@ -17,13 +17,6 @@ function Home() {
       .catch(err => console.error('Fetch failed:', err));
   }, [searchItem]); 
 
-  useEffect(() => {
-    axios
-      .get(`http://localhost:3001/visitors${searchItem ? `?search=${searchItem}` : ''}`)
-      .then(res => setVisitors(res.data))
-      .catch(err => console.error('Fetch failed:', err));
-  }, [searchItem]); 
-
   return (
     <>
 
