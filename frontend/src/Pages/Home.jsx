@@ -6,12 +6,21 @@ function Home() {
   
   const [animals, setAnimals] = useState([]);
   const [searchItem, setSearchItem] = useState([]);
-  const [expandedId, setExpandedId] = useState(null);
+  const [expandedId, setExpandedId] = useState([]);
+  const [visitors, setVisitors] = useState([]);
+    const [searchVisitor, setSearchVisitor] = useState('');
   
   useEffect(() => {
     axios
       .get(`http://localhost:3001/animals${searchItem ? `?search=${searchItem}` : ''}`)
       .then(res => setAnimals(res.data))
+      .catch(err => console.error('Fetch failed:', err));
+  }, [searchItem]); 
+
+  useEffect(() => {
+    axios
+      .get(`http://localhost:3001/visitors${searchItem ? `?search=${searchItem}` : ''}`)
+      .then(res => setVisitors(res.data))
       .catch(err => console.error('Fetch failed:', err));
   }, [searchItem]); 
 
@@ -27,6 +36,7 @@ function Home() {
           <Link to="/animals">Animals</Link>
           <Link to="/staff">Staff</Link>
           <Link to ="/visitors">Visitors</Link>
+          <Link to ="/facilities">Facilities</Link>
         </nav>
         <input
     type="text"
@@ -37,7 +47,6 @@ function Home() {
   />
         
       </div>
-      
       
 
       <div className="animals-page">

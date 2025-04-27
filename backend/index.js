@@ -87,9 +87,9 @@ app.get('/visitors', (req, res) => {
   let params = [];
 
   if (search) {
-    query += ' WHERE Name LIKE ? OR VisitorID LIKE ? OR GroupID Like ?';
+    query += ' WHERE Name LIKE ? OR VisitorID LIKE ? OR GroupID LIKE ?';
     const searchTerm = `%${search}%`;
-    params = [searchTerm, searchTerm];
+    params = [searchTerm, searchTerm, searchTerm];
   }
 
   db.query(query, params, (err, results) => {
@@ -136,6 +136,61 @@ app.delete('/visitors/:id', (req, res) => {
     res.status(200).send('Visitor history deleted');
   });
 });
+
+/* function for entering data into the top search bar */
+app.get('/facilities', (req, res) => {
+  const search = req.query.search || '';
+
+  let query = 'SELECT * FROM Facilities';
+  let params = [];
+
+  if (search) {
+    query += ' WHERE Name LIKE ? OR Type LIKE ? OR Location LIKE ?';
+    const searchTerm = `%${search}%`;
+    params = [searchTerm, searchTerm, searchTerm];
+  }
+
+  db.query(query, params, (err, results) => {
+    if (err) {
+      console.error('Error querying Facilities table', err);
+      return res.status(500).send('Internal server error');
+    }
+    res.json(results);
+  });
+});
+
+/* function for adding facilities to the database */
+app.post('/facilities', (req, res) => {
+  const { Type, Name, Location, Description } = req.body;
+  console.log("Incoming facility data: ", req.body);
+
+  const query = 'INSERT INTO Facilities (Type, Name, Location, Description) VALUES (?,?,?,?)';
+
+  db.query(query, [Type, Name, Location, Description], (err, result) => {
+    if (err) {
+      console.error("Error inserting facility", err);
+      return res.status(500).send({ error: 'Insert failed' });
+    }
+    res.status(201).json({ id: result.insertId });
+  });
+});
+
+/* function for deleting facilities from db by name (assuming Name is the unique key) */
+app.delete('/facilities/:name', (req, res) => {
+  const facilityName = req.params.name;
+  console.log("Incoming delete for facility:", facilityName);
+
+  db.query(`DELETE FROM Facilities WHERE Name = ?`, [facilityName], (err, result) => {
+    if (err) {
+      console.error('Error deleting facility:', err);
+      return res.status(500).send('Delete failed');
+    }
+    console.log(`Deleted Facility Name:`, facilityName);
+
+    res.status(200).send('Facility deleted');
+  });
+});
+
 
 app.listen(PORT, () => {
   console.log(`Server listening on port ${PORT}`);

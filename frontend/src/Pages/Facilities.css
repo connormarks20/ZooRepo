@@ -1,0 +1,71 @@
+.facility-list-header-row div {
+    padding: 4px 6px;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+  }
+  
+  .facility-list {
+    padding-left: 0;
+  }
+  
+  .facility-list li {
+    display: grid;
+    grid-template-columns: 1fr 2fr 2fr 3fr 0.7fr; /* 👈 4 fields + delete button */
+    column-gap: 20px;
+    align-items: center;
+    padding: 8px 16px;
+    border: 1px solid #ddd;
+    border-radius: 6px;
+    background: white;
+    margin-bottom: 8px;
+    font-size: 14px;
+    width: 98%;
+    list-style: none;
+    letter-spacing: 1px;
+  }
+  
+  .facilities-admin .admin-facilities-list,
+  .facilities-admin .facilities-list {
+    list-style-type: none;
+    padding: 0;
+    margin: 0;
+    width: 100%;
+  }
+  
+  .facilities-admin .admin-facilities-list li,
+  .facilities-admin .facilities-list li {
+    display: grid;
+    grid-template-columns: 1fr 2fr 2fr 3fr auto; /* 👈 match 4 fields */
+    background: white;
+    padding: 12px 20px;
+    margin-bottom: 8px;
+    border: 1px solid #ddd;
+    border-radius: 6px;
+    align-items: center;
+    text-align: left;
+    font-size: 14px;
+  }
+  
+  .facilities-admin .admin-facilities-list li strong,
+  .facilities-admin .facilities-list li strong {
+    font-weight: 600;
+  }
+  
+  .delete-button {
+    background-color: #ff5252;
+    color: white;
+    border: none;
+    padding: 6px 12px;
+    border-radius: 6px;
+    cursor: pointer;
+    font-weight: bold;
+    transition: all 0.2s ease-in-out;
+    justify-self: end;
+  }
+  
+  .delete-button:hover {
+    background-color: #ff0000;
+    transform: scale(1.05);
+  }
+  
