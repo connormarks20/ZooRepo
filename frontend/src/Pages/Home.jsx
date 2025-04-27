@@ -20,8 +20,6 @@ function Home() {
   return (
     <>
 
-
-    
       <div className="top-bar">
         <h1> 🐧 🐻 🐨 Zoological DB 🦁 🐒 🦓</h1>
         <nav className="nav-links">

@@ -1,4 +1,5 @@
 import React, { useEffect, useState } from 'react';
+import { Link } from 'react-router-dom'; 
 import axios from 'axios';
 import './Facilities.css'; // You should create Facilities.css or copy styling from Staff.css
 
@@ -131,7 +132,7 @@ function Facilities() {
 
         <ul className="facilities-list">
           {facilitiesList.map(facility => (
-            <li key={facility.Name} className="facility-item">
+            <li key={facility.Name} className="facilities">
               <div className="facility-attributes">
                 <strong>Type:</strong> {facility.Type}
               </div>

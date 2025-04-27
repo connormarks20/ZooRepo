@@ -78,6 +78,7 @@ function Animals() {
       <Link to="/animals">Animals</Link>
       <Link to="/staff">Staff</Link>
       <Link to ="/visitors">Visitors</Link>
+      <a href="/visitors">Facilities</a> 
     </nav>
   
     <input

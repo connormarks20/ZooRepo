@@ -1,4 +1,5 @@
 import React, { useEffect, useState } from 'react';
+import { Link } from 'react-router-dom'; 
 import axios from 'axios';
 import './Visitors.css';
 
@@ -77,7 +78,8 @@ function Visitors() {
           <a href="/">Home</a>
           <a href="/animals">Animals</a>
           <a href="/staff">Staff</a>
-          <a href="/visitors">Visitors</a> {/* you said you want visitors to reroute to /visitors */}
+          <a href="/visitors">Visitors</a>
+          <a href="/visitors">Facilities</a> 
         </nav>
 
         <input

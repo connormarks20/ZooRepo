@@ -14,7 +14,7 @@
   .visitor-list li {
     display: grid;
     grid-template-columns: 1fr 2fr 2fr 2fr 2fr 4fr 2fr 0.7fr;
-    column-gap: 20px; /* 👈 added */
+    column-gap: 20px; 
     align-items: center;
     padding: 8px 16px;
     border: 1px solid #ddd;
@@ -24,7 +24,7 @@
     font-size: 14px;
     width: 98%;
     list-style: none;
-    letter-spacing: 1px; /* Adds space between characters */
+    letter-spacing: 1px; 
 
   }
   
