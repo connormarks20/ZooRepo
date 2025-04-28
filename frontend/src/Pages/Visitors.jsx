@@ -27,7 +27,9 @@ function Visitors() {
 
   const handleAddVisitor = (e) => {
     e.preventDefault();
-    axios.post('http://localhost:3001/visitors', newVisitor)
+    axios.post('http://localhost:3001/visitors', newVisitor, {
+      withCredentials: true
+    })
       .then(() => {
         setNewVisitor({
           VisitorID: '',
@@ -71,26 +73,6 @@ function Visitors() {
 
   return (
     <>
-      <div className="top-bar">
-        <h1>🐧 🐻 🐨 Zoological DB 🦁 🐒 🦓 </h1>
-
-        <nav className="nav-links">
-          <Link to="/">Home</Link> {/* Use Link here */}
-          <Link to="/animals">Animals</Link>
-          <Link to="/staff">Staff</Link>
-          <Link to="/visitors">Visitors</Link> {/* Use Link here */}
-          <Link to="/facilities">Facilities</Link> {/* Use Link here */}
-        </nav>
-
-        <input
-          type="text"
-          placeholder="Search visitors..."
-          className="search-bar"
-          value={searchVisitor}
-          onChange={(e) => setSearchVisitor(e.target.value)}
-        />
-      </div>
-
       <div className="visitor-page">
         {message && <div className="status-message">{message}</div>}
 

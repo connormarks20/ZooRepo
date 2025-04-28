@@ -1,0 +1,30 @@
+.admin-page {
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: 40px;
+    box-sizing: border-box;
+  }
+  
+  .user-table-container {
+    width: 100%;
+    overflow-x: auto;
+    margin-top: 20px;
+  }
+  
+  .user-table-container table {
+    width: 100%;
+    border-collapse: collapse;
+  }
+  
+  .user-table-container th,
+  .user-table-container td {
+    padding: 12px 20px;
+    text-align: left;
+    border-bottom: 1px solid #ccc;
+  }
+  
+  .user-table-container select {
+    padding: 6px;
+    font-size: 1rem;
+  }
+  

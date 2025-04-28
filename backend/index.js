@@ -1,18 +1,38 @@
 const express = require('express');
+const session = require('express-session');
 const cors = require('cors');
 const db = require('./db');
+const authRoutes = require('./routes/auth');
 
 const app = express();
 const PORT = process.env.PORT || 3001;
 
-app.use(cors());
+// Middlewares
+app.use(cors({
+  origin: 'http://localhost:5173',
+  credentials: true
+}));
 app.use(express.json());
+app.use(session({
+  secret: 'we_bought_a_zoo',
+  resave: false,
+  saveUninitialized: false,
+  cookie: { secure: false }
+}));
 
+app.use('/api/auth', authRoutes);
 
-/* function for entering data into the top search bar */
-app.get('/animals', (req, res) => {
+app.get('/api/me', (req, res) => {
+  if (req.session.user) {
+    res.json({ user: req.session.user });
+  } else {
+    res.status(401).json({ message: 'Not logged in' });
+  }
+});
+
+// ----- Animals -----
+app.get('/animals', async (req, res) => {
   const search = req.query.search || '';
-
   let query = 'SELECT * FROM Animal';
   let params = [];
 
@@ -22,67 +42,51 @@ app.get('/animals', (req, res) => {
     params = [searchTerm, searchTerm];
   }
 
-  db.query(query, params, (err, results) => {
-    if (err) {
-      console.error('error quering db', err);
-      return res.status(500).send('internal error');
-    }
+  try {
+    const [results] = await db.query(query, params);
     res.json(results);
-  });
+  } catch (err) {
+    console.error('Error querying Animal table', err);
+    res.status(500).send('Internal server error');
+  }
 });
 
-/* function for adding animals to the database */
-app.post('/animals', (req, res) => {
-  const {Name, Species, Age, Gender, ImageURL} = req.body; // Just adding name, species, age, and gender for now. can include more later 
-  console.log("incoming animal data: ", req.body);
-  const query = 'INSERT INTO Animal (Name,Species,Age,Gender,ImageURL) VALUES (?,?,?,?,?)';
+app.post('/animals', async (req, res) => {
+  if (!req.session.user || (req.session.user.role !== 'staff' && req.session.user.role !== 'admin')) {
+    return res.status(403).send('Forbidden');
+  }
 
-  db.query(query, [Name,Species,Age,Gender,ImageURL], (err,result) => {
-    if(err){
-      console.error("Error inserting", err);
-      return res.status(500).send('Insert failed');
-    }
-    res.status(201).json({id: result.insertId});
-  });
+  const { Name, Species, Age, Gender, ImageURL } = req.body;
+  const query = 'INSERT INTO Animal (Name, Species, Age, Gender, ImageURL) VALUES (?,?,?,?,?)';
+  
+  try {
+    const [result] = await db.query(query, [Name, Species, Age, Gender, ImageURL]);
+    res.status(201).json({ id: result.insertId });
+  } catch (err) {
+    console.error('Error inserting animal', err);
+    res.status(500).send('Insert failed');
+  }
 });
 
-/* function for deleting animals from db by id. (pk) */
-app.delete('/animals/:id', (req, res) => {
+app.delete('/animals/:id', async (req, res) => {
+  if (!req.session.user || (req.session.user.role !== 'staff' && req.session.user.role !== 'admin')) {
+    return res.status(403).send('Forbidden');
+  }
+
   const animalId = req.params.id;
-  console.log("incoming delete", animalId);
-  db.query(`DELETE FROM Animal WHERE AnimalID = ?`, [animalId], (err, result) => {
-    if (err) {
-      console.error('Error deleting animal:', err);
-      return res.status(500).send('Delete failed');
-    }
-    console.log(` Deleting Animal ID:`, animalId, typeof animalId);
-
+  
+  try {
+    await db.query('DELETE FROM Animal WHERE AnimalID = ?', [animalId]);
     res.status(200).send('Animal deleted');
-  });
+  } catch (err) {
+    console.error('Error deleting animal', err);
+    res.status(500).send('Delete failed');
+  }
 });
 
-/* function for the animals page to get each animal and the corresponding data from the database */
-/*
-app.get('/animals', (req, res) => {
-  console.log("Getting animal data");
-
-  const query = 'SELECT * FROM Animal';
-
-  db.query(query, (err, result) => {
-    if (err) {
-      console.error('Error fetching animals:', err);
-      return res.status(500).json({ error: 'Failed to retrieve animal data' });
-    }
-
-    res.json(result); // Send the data back to frontend
-  });
-});
-*/
-
-/* function for entering data into the top search bar */
-app.get('/visitors', (req, res) => {
+// ----- Visitors -----
+app.get('/visitors', async (req, res) => {
   const search = req.query.search || '';
-
   let query = 'SELECT * FROM Visitors';
   let params = [];
 
@@ -92,59 +96,45 @@ app.get('/visitors', (req, res) => {
     params = [searchTerm, searchTerm, searchTerm];
   }
 
-  db.query(query, params, (err, results) => {
-    if (err) {
-      console.error('error quering db', err);
-      return res.status(500).send('internal error');
-    }
+  try {
+    const [results] = await db.query(query, params);
     res.json(results);
-  });
+  } catch (err) {
+    console.error('Error querying Visitors table', err);
+    res.status(500).send('Internal server error');
+  }
 });
 
-/* function for adding animals to the database */
-app.post('/visitors', (req, res) => {
-  const {VisitorID,
-    Name,
-    GroupID,
-    DateOfVisit,
-    AmountSpent,
-    History,
-    MembershipType} = req.body; // Just adding name, species, age, and gender for now. can include more later 
-  console.log("incoming visitor data: ", req.body);
-  const query = 'INSERT INTO Visitors (Name,GroupID,DateOfVisit,AmountSpent,History, MembershipType) VALUES (?,?,?,?,?,?)';
-
-  db.query(query, [Name,GroupID,DateOfVisit,AmountSpent,History, MembershipType], (err,result) => {
-    if(err){
-      console.error("Error inserting", err);
-      return res.status(500).send('Insert failed');
-    }
-    res.status(201).json({id: result.insertId});
-  });
+app.post('/visitors', async (req, res) => {
+  const { Name, GroupID, DateOfVisit, AmountSpent, History, MembershipType } = req.body;
+  const query = 'INSERT INTO Visitors (Name, GroupID, DateOfVisit, AmountSpent, History, MembershipType) VALUES (?,?,?,?,?,?)';
+  
+  try {
+    const [result] = await db.query(query, [Name, GroupID, DateOfVisit, AmountSpent, History, MembershipType]);
+    res.status(201).json({ id: result.insertId });
+  } catch (err) {
+    console.error('Error inserting visitor', err);
+    res.status(500).send('Insert failed');
+  }
 });
 
-/* function for deleting visitors from db by id. (pk) */
-app.delete('/visitors/:id', (req, res) => {
+app.delete('/visitors/:id', async (req, res) => {
   const visitorID = req.params.id;
-  console.log("incoming delete", visitorID);
-  db.query(`DELETE FROM Visitors WHERE VisitorID = ?`, [visitorID], (err, result) => {
-    if (err) {
-      console.error('Error deleting animal:', err);
-      return res.status(500).send('Delete failed');
-    }
-    console.log(` Deleting Visitor ID:`, visitorID, typeof visitorID);
-
-    res.status(200).send('Visitor history deleted');
-  });
+  
+  try {
+    await db.query('DELETE FROM Visitors WHERE VisitorID = ?', [visitorID]);
+    res.status(200).send('Visitor deleted');
+  } catch (err) {
+    console.error('Error deleting visitor', err);
+    res.status(500).send('Delete failed');
+  }
 });
 
-/* function for entering data into the top search bar (for Staff) */
-app.get('/staff', (req, res) => {
+// ----- Staff -----
+app.get('/staff', async (req, res) => {
   const search = req.query.search || '';
-
-
   let query = 'SELECT * FROM Staff';
   let params = [];
-
 
   if (search) {
     query += ' WHERE Name LIKE ? OR EmployeeID LIKE ? OR DepartmentID LIKE ?';
@@ -152,58 +142,43 @@ app.get('/staff', (req, res) => {
     params = [searchTerm, searchTerm, searchTerm];
   }
 
-
-  db.query(query, params, (err, results) => {
-    if (err) {
-      console.error('error querying staff table', err);
-      return res.status(500).send('Internal error');
-    }
+  try {
+    const [results] = await db.query(query, params);
     res.json(results);
-  });
+  } catch (err) {
+    console.error('Error querying Staff table', err);
+    res.status(500).send('Internal server error');
+  }
 });
 
-
-/* function for adding staff to the database */
-app.post('/staff', (req, res) => {
+app.post('/staff', async (req, res) => {
   const { Name, Salary, WeeklySchedule, DepartmentID } = req.body;
-  console.log("incoming staff data: ", req.body);
-
-
   const query = 'INSERT INTO Staff (Name, Salary, WeeklySchedule, DepartmentID) VALUES (?,?,?,?)';
-
-
-  db.query(query, [Name, Salary, WeeklySchedule, DepartmentID], (err, result) => {
-    if (err) {
-      console.error("Error inserting staff", err);
-      return res.status(500).json({error: 'Insert failed'});
-    }
+  
+  try {
+    const [result] = await db.query(query, [Name, Salary, WeeklySchedule, DepartmentID]);
     res.status(201).json({ id: result.insertId });
-  });
+  } catch (err) {
+    console.error('Error inserting staff', err);
+    res.status(500).send('Insert failed');
+  }
 });
 
-
-/* function for deleting staff from db by id (EmployeeID) */
-app.delete('/staff/:id', (req, res) => {
+app.delete('/staff/:id', async (req, res) => {
   const employeeID = req.params.id;
-  console.log("incoming delete for staff", employeeID);
-
-
-  db.query('DELETE FROM Staff WHERE EmployeeID = ?', [employeeID], (err, result) => {
-    if (err) {
-      console.error('Error deleting staff:', err);
-      return res.status(500).send('Delete failed');
-    }
-    console.log(`Deleting EmployeeID:`, employeeID, typeof employeeID);
-
-
+  
+  try {
+    await db.query('DELETE FROM Staff WHERE EmployeeID = ?', [employeeID]);
     res.status(200).send('Staff record deleted');
-  });
+  } catch (err) {
+    console.error('Error deleting staff', err);
+    res.status(500).send('Delete failed');
+  }
 });
 
-/* function for entering data into the top search bar */
-app.get('/facilities', (req, res) => {
+// ----- Facilities -----
+app.get('/facilities', async (req, res) => {
   const search = req.query.search || '';
-
   let query = 'SELECT * FROM Facilities';
   let params = [];
 
@@ -213,48 +188,106 @@ app.get('/facilities', (req, res) => {
     params = [searchTerm, searchTerm, searchTerm, searchTerm];
   }
 
-  db.query(query, params, (err, results) => {
-    if (err) {
-      console.error('Error querying Facilities table', err);
-      return res.status(500).send('Internal server error');
-    }
+  try {
+    const [results] = await db.query(query, params);
     res.json(results);
-  });
+  } catch (err) {
+    console.error('Error querying Facilities table', err);
+    res.status(500).send('Internal server error');
+  }
 });
 
-/* function for adding facilities to the database */
-app.post('/facilities', (req, res) => {
+app.post('/facilities', async (req, res) => {
+  if (!req.session.user || (req.session.user.role !== 'staff' && req.session.user.role !== 'admin')) {
+    return res.status(403).send('Forbidden');
+  }
+
   const { Type, Name, Location, Description } = req.body;
-  console.log("Incoming facility data: ", req.body);
-
   const query = 'INSERT INTO Facilities (Type, Name, Location, Description) VALUES (?,?,?,?)';
-
-  db.query(query, [Type, Name, Location, Description], (err, result) => {
-    if (err) {
-      console.error("Error inserting facility", err);
-      return res.status(500).send({ error: 'Insert failed' });
-    }
+  
+  try {
+    const [result] = await db.query(query, [Type, Name, Location, Description]);
     res.status(201).json({ id: result.insertId });
-  });
+  } catch (err) {
+    console.error('Error inserting facility', err);
+    res.status(500).send('Insert failed');
+  }
 });
 
-/* function for deleting facilities from db by name (assuming Name is the unique key) */
-app.delete('/facilities/:name', (req, res) => {
+app.delete('/facilities/:name', async (req, res) => {
+  if (!req.session.user || (req.session.user.role !== 'staff' && req.session.user.role !== 'admin')) {
+    return res.status(403).send('Forbidden');
+  }
+
   const facilityName = req.params.name;
-  console.log("Incoming delete for facility:", facilityName);
-
-  db.query(`DELETE FROM Facilities WHERE Name = ?`, [facilityName], (err, result) => {
-    if (err) {
-      console.error('Error deleting facility:', err);
-      return res.status(500).send('Delete failed');
-    }
-    console.log(`Deleted Facility Name:`, facilityName);
-
+  
+  try {
+    await db.query('DELETE FROM Facilities WHERE Name = ?', [facilityName]);
     res.status(200).send('Facility deleted');
-  });
+  } catch (err) {
+    console.error('Error deleting facility', err);
+    res.status(500).send('Delete failed');
+  }
+});
+
+// ----- Admin Dashboard -----
+// Get all users (Admin only)
+app.get('/api/users', async (req, res) => {
+  if (!req.session.user || req.session.user.role !== 'admin') {
+    return res.status(403).json({ message: 'Forbidden' });
+  }
+
+  try {
+    const [users] = await db.query('SELECT id, username, role FROM users');
+    res.json(users);
+  } catch (err) {
+    console.error('Error fetching users', err);
+    res.status(500).send('Server error');
+  }
+});
+
+// Promote a user to staff or admin (Admin only)
+app.post('/api/users/:id/promote', async (req, res) => {
+  if (!req.session.user || req.session.user.role !== 'admin') {
+    return res.status(403).json({ message: 'Forbidden' });
+  }
+
+  const userId = req.params.id;
+  const { role } = req.body;
+
+  if (!['visitor', 'staff', 'admin'].includes(role)) {
+    return res.status(400).json({ message: 'Invalid role' });
+  }
+
+  try {
+    await db.query('UPDATE users SET role = ? WHERE id = ?', [role, userId]);
+    res.json({ message: 'User role updated' });
+  } catch (err) {
+    console.error('Error updating user role', err);
+    res.status(500).send('Server error');
+  }
+});
+
+// Delete a user by ID
+app.delete('/api/users/:id', async (req, res) => {
+  if (!req.session.user || req.session.user.role !== 'admin') {
+    return res.status(403).json({ message: 'Forbidden' });
+  }
+
+  const userId = req.params.id;
+
+  try {
+    await db.query('DELETE FROM users WHERE id = ?', [userId]);
+    res.json({ message: 'User deleted successfully' });
+  } catch (err) {
+    console.error('Error deleting user', err);
+    res.status(500).send('Server error');
+  }
 });
 
 
+
+// Start server
 app.listen(PORT, () => {
   console.log(`Server listening on port ${PORT}`);
 });

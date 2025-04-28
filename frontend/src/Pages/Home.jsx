@@ -17,27 +17,6 @@ function Home() {
 
   return (
     <>
-
-      <div className="top-bar">
-        <h1> 🐧 🐻 🐨 Zoological DB 🦁 🐒 🦓</h1>
-        <nav className="nav-links">
-          <Link to="/">Home</Link>
-          <Link to="/animals">Animals</Link>
-          <Link to="/staff">Staff</Link>
-          <Link to ="/visitors">Visitors</Link>
-          <Link to ="/facilities">Facilities</Link>
-        </nav>
-        <input
-    type="text"
-    placeholder="Search animals..."
-    className="search-bar"
-    value={searchItem}
-    onChange={(e) => setSearchItem(e.target.value)}
-  />
-        
-      </div>
-      
-
       <div className="animals-page">
       <div className="welcome">
         <h1>🐾 Welcome to the Zoo Database 🐾</h1>

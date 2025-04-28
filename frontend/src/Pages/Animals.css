@@ -2,43 +2,82 @@
     list-style-type: none;
     padding: 0;
   }
-  
-  .animals-admin .admin-animal-list li {
-    background: white;
-    padding: 12px 20px;
-    margin-bottom: 10px;
-    border: 1px solid #ddd;
-    border-radius: 8px;
-    text-align: left;
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-  }
-  .animals-admin .animal-list li {
-    background: white;
-    padding: 12px 20px;
-    margin-bottom: 10px;
-    border: 1px solid #ddd;
-    border-radius: 8px;
-    text-align: left;
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-  }
-  
-  .delete-button {
-    background-color: #ff5252;
-    color: white;
-    border: none;
-    padding: 6px 12px;
-    border-radius: 6px;
-    cursor: pointer;
-    font-weight: bold;
-    transition: all 0.2s ease-in-out; /* add transition on normal state too */
-  }
-  
-  .delete-button:hover {
-    background-color: #ff0000; /* intense red when hovered */
-    transform: scale(1.05); /* slightly bigger on hover */
-  }
-  
+
+.animals-admin .admin-animal-list li {
+  background: white;
+  padding: 12px 20px;
+  margin-bottom: 10px;
+  border: 1px solid #ddd;
+  border-radius: 8px;
+  text-align: left;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+.animals-admin .animal-list li {
+  background: white;
+  padding: 12px 20px;
+  margin-bottom: 10px;
+  border: 1px solid #ddd;
+  border-radius: 8px;
+  text-align: left;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.delete-button {
+  background-color: #ff5252;
+  color: white;
+  border: none;
+  padding: 6px 12px;
+  border-radius: 6px;
+  cursor: pointer;
+  font-weight: bold;
+  transition: all 0.2s ease-in-out; /* add transition on normal state too */
+}
+
+.delete-button:hover {
+  background-color: #ff0000; /* intense red when hovered */
+  transform: scale(1.05); /* slightly bigger on hover */
+}
+
+.add-form {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px;
+  margin-top: 20px;
+  align-items: center;
+  background-color: #f9f9f9;
+  padding: 20px;
+  border: 1px solid #ccc;
+  border-radius: 10px;
+  box-shadow: 2px 2px 10px rgba(0,0,0,0.1);
+  max-width: 100%;
+  justify-content: center;
+}
+
+.add-form input {
+  flex: 1 1 180px;
+  padding: 10px 12px;
+  font-size: 1rem;
+  border: 1px solid #ccc;
+  border-radius: 8px;
+  background-color: white;
+}
+
+.add-form button {
+  padding: 10px 20px;
+  font-size: 1rem;
+  font-weight: bold;
+  background-color: #2c3e50; /* Matches your nav dark blue */
+  color: white;
+  border: none;
+  border-radius: 8px;
+  cursor: pointer;
+  transition: background-color 0.2s ease-in-out;
+}
+
+.add-form button:hover {
+  background-color: #f39c12; /* Matches your link hover (orange) */
+}

@@ -1,36 +1,127 @@
-import React from 'react';
-
+import React, { useState, useEffect } from 'react';
 import {
   BrowserRouter as Router,
   Routes,
   Route,
-  Link
+  Link,
+  useLocation,
+  useNavigate,
+  Navigate
 } from 'react-router-dom';
+import axios from 'axios';
 
 import Home from './Pages/Home';
 import Staff from './Pages/Staff';
 import Animals from './Pages/Animals';
 import Visitors from './Pages/Visitors';
 import Facilities from './Pages/Facilities';
+import Login from './Pages/Login';
+import Register from './Pages/Register';
+import AdminDashboard from './Pages/AdminDashboard';
 
+function TopBar({ searchFacility, setSearchFacility, user, setUser }) {
+  const location = useLocation();
+  const currentPath = location.pathname;
+  const navigate = useNavigate();
+
+
+  // Only show search input on these pages
+  const showSearchBar = ['/animals', '/staff', '/visitors', '/facilities'].includes(currentPath);
+
+  const handleLogout = async () => {
+    try {
+      await axios.post('http://localhost:3001/api/auth/logout', {}, { withCredentials: true });
+      setUser(null); // clear user on frontend
+      navigate('/');
+    } catch (err) {
+      console.error('Logout failed', err);
+    }
+  };
+
+  return (
+    <div className="top-bar">
+      <h1>🐧 🐻 🐨 Zoological DB 🦁 🐒 🦓</h1>
+
+      <nav className="nav-links">
+        <Link to="/">Home</Link>
+        <Link to="/animals">Animals</Link>
+        {(user?.role === 'staff' || user?.role === 'admin') && <Link to="/staff">Staff</Link>}
+        {(user?.role === 'staff' || user?.role === 'admin') && <Link to="/visitors">Visitors</Link>}
+        <Link to="/facilities">Facilities</Link>
+        {!user && <Link to="/login">Login</Link>}
+        {!user && <Link to="/register">Register</Link>}
+        {user?.role === 'admin' && <Link to="/admin">Admin Dashboard</Link>}
+        {user && <Link to="#" onClick={handleLogout}>Logout</Link>}
+        </nav>
+
+      {showSearchBar && (
+        <input
+          type="text"
+          placeholder="Search List..."
+          className="search-bar"
+          value={searchFacility}
+          onChange={(e) => setSearchFacility(e.target.value)}
+        />
+      )}
+    </div>
+  );
+}
 
 function App() {
+  const [searchFacility, setSearchFacility] = useState('');
+  const [user, setUser] = useState(null);
+  const [loading, setLoading] = useState(true);
+
+  // On app load, check if user is logged in
+  useEffect(() => {
+    axios.get('http://localhost:3001/api/me', { withCredentials: true })
+      .then(res => {
+        setUser(res.data.user);
+        setLoading(false);
+      })
+      .catch(() => {
+        setUser(null);
+        setLoading(false);
+      });
+  }, []);
+
+  if (loading) return <div>Loading...</div>; // small loading screen while checking login
+
   return (
     <Router>
       <div className="app">
-        <nav>
-        <Link to="/">Home</Link> | <Link to="/staff">Staff</Link> | <Link to="/animals">Animals</Link> | <Link to="/visitors">Visitors</Link> | <Link to="/facilities">Facilities</Link> 
-        </nav>
-        
+        <TopBar searchFacility={searchFacility} setSearchFacility={setSearchFacility} user={user} setUser={setUser} />
+
         <Routes>
           <Route path="/" element={<Home />} />
-          <Route path="/staff" element={<Staff />} />
-          <Route path="/animals" element={<Animals />} />
-          <Route path="/visitors" element={<Visitors />} />
-          <Route path="/facilities" element={<Facilities />} />
+          <Route path="/animals" element={<Animals user={user} />} />
+          <Route path="/facilities" element={<Facilities user={user} />} />
           
-        </Routes>
+          {/* Staff page - staff/admin only */}
+          <Route path="/staff" element={
+            user?.role === 'staff' || user?.role === 'admin'
+              ? <Staff user={user} />
+              : <Navigate to="/" />
+          } />
 
+          {/* Visitors page - staff/admin only */}
+          <Route path="/visitors" element={
+            user?.role === 'staff' || user?.role === 'admin'
+              ? <Visitors user={user} />
+              : <Navigate to="/" />
+          } />
+
+          {/* Admin Dashboard - admin only */}
+          <Route path="/admin" element={
+            user?.role === 'admin'
+              ? <AdminDashboard />
+              : <Navigate to="/" />
+          } />
+
+          {/* Login/Register - only for not logged in */}
+          <Route path="/login" element={!user ? <Login setUser={setUser} /> : <Navigate to="/" />} />
+          <Route path="/register" element={!user ? <Register setUser={setUser} /> : <Navigate to="/" />} />
+        </Routes>
       </div>
     </Router>
   );

@@ -29,7 +29,9 @@ function Staff() {
 
   const handleAddStaff = (e) => {
     e.preventDefault();
-    axios.post('http://localhost:3001/staff', newStaff)
+    axios.post('http://localhost:3001/staff', newStaff, {
+      withCredentials: true
+    })
       .then(() => {
         setNewStaff({
           EmployeeID: '',
@@ -82,29 +84,6 @@ function Staff() {
 
   return (
     <>
-      <div className="top-bar">
-        <h1>🐧 🐻 🐨 Zoological DB 🦁 🐒 🦓 </h1>
-
-
-        <nav className="nav-links">
-            <Link to="/">Home</Link>
-            <Link to="/animals">Animals</Link>
-            <Link to="/staff">Staff</Link>
-            <Link to="/visitors">Visitors</Link>
-            <Link to="/facilities">Facilities</Link>
-        </nav>
-
-
-        <input
-          type="text"
-          placeholder="Search staff..."
-          className="search-bar"
-          value={searchStaff}
-          onChange={(e) => setSearchStaff(e.target.value)}
-        />
-      </div>
-
-
       <div className="staff-page">
 
         {message && <div className="status-message">{message}</div>}

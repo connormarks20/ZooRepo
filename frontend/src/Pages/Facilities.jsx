@@ -3,7 +3,7 @@ import { Link } from 'react-router-dom';
 import axios from 'axios';
 import './Facilities.css'; // You should create Facilities.css or copy styling from Staff.css
 
-function Facilities() {
+function Facilities({ user }) {
   const [facilitiesList, setFacilitiesList] = useState([]);
   const [searchFacility, setSearchFacility] = useState('');
   const [message, setMessage] = useState('');
@@ -24,7 +24,9 @@ function Facilities() {
 
   const handleAddFacility = (e) => {
     e.preventDefault();
-    axios.post('http://localhost:3001/facilities', newFacility)
+    axios.post('http://localhost:3001/facilities', newFacility, {
+      withCredentials: true
+    })
       .then(() => {
         setNewFacility({
           Type: '',
@@ -72,61 +74,44 @@ function Facilities() {
 
   return (
     <>
-      <div className="top-bar">
-        <h1>🐧 🐻 🐨 Zoological DB 🦁 🐒 🦓</h1>
-
-        <nav className="nav-links">
-            <Link to="/">Home</Link>
-            <Link to="/animals">Animals</Link>
-            <Link to="/staff">Staff</Link>
-            <Link to="/visitors">Visitors</Link>
-            <Link to="/facilities">Facilities</Link>
-        </nav>
-
-        <input
-          type="text"
-          placeholder="Search facilities..."
-          className="search-bar"
-          value={searchFacility}
-          onChange={(e) => setSearchFacility(e.target.value)}
-        />
-      </div>
-
       <div className="facilities-page">
         {message && <div className="status-message">{message}</div>}
 
         <div className="facilities-list-header">
           <h2>Facility List</h2>
-          <form className="add-form" onSubmit={handleAddFacility}>
-            <input
-              type="text"
-              placeholder="Type"
-              value={newFacility.Type}
-              onChange={(e) => setNewFacility({ ...newFacility, Type: e.target.value })}
-              required
-            />
-            <input
-              type="text"
-              placeholder="Name"
-              value={newFacility.Name}
-              onChange={(e) => setNewFacility({ ...newFacility, Name: e.target.value })}
-              required
-            />
-            <input
-              type="text"
-              placeholder="Location"
-              value={newFacility.Location}
-              onChange={(e) => setNewFacility({ ...newFacility, Location: e.target.value })}
-              required
-            />
-            <input
-              type="text"
-              placeholder="Description"
-              value={newFacility.Description}
-              onChange={(e) => setNewFacility({ ...newFacility, Description: e.target.value })}
-            />
-            <button type="submit">Add Facility</button>
-          </form>
+
+          {(user?.role === 'staff' || user?.role === 'admin') && (
+            <form className="add-form" onSubmit={handleAddFacility}>
+              <input
+                type="text"
+                placeholder="Type"
+                value={newFacility.Type}
+                onChange={(e) => setNewFacility({ ...newFacility, Type: e.target.value })}
+                required
+              />
+              <input
+                type="text"
+                placeholder="Name"
+                value={newFacility.Name}
+                onChange={(e) => setNewFacility({ ...newFacility, Name: e.target.value })}
+                required
+              />
+              <input
+                type="text"
+                placeholder="Location"
+                value={newFacility.Location}
+                onChange={(e) => setNewFacility({ ...newFacility, Location: e.target.value })}
+                required
+              />
+              <input
+                type="text"
+                placeholder="Description"
+                value={newFacility.Description}
+                onChange={(e) => setNewFacility({ ...newFacility, Description: e.target.value })}
+              />
+              <button type="submit">Add Facility</button>
+            </form>
+          )}
         </div>
 
         <ul className="facilities-list">
@@ -144,7 +129,9 @@ function Facilities() {
             <div className="facility-column">
             <strong>Description:</strong> {facility.Description || 'N/A'}
             </div>
-            <button className="delete-button" onClick={() => handleDelete(facility.Name)}>❌ Delete</button>
+            {(user?.role === 'staff' || user?.role === 'admin') && (
+              <button className="delete-button" onClick={() => handleDelete(facility.Name)}>❌ Delete</button>
+            )}
         </li>
     ))}
   </ul>
