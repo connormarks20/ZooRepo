@@ -246,6 +246,8 @@ app.get('/api/users', async (req, res) => {
   }
 });
 
+
+
 // Promote a user to staff or admin (Admin only)
 app.post('/api/users/:id/promote', async (req, res) => {
   if (!req.session.user || req.session.user.role !== 'admin') {

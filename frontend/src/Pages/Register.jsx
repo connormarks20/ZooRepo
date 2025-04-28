@@ -7,7 +7,7 @@ import { useNavigate } from 'react-router-dom';
 function Register({ setUser }) {
   const [username, setUsername] = useState('');
   const [password, setPassword] = useState('');
-  const [role, setRole] = useState('visitor');
+  const [role, setRole] = useState('');
   const [statusMessage, setStatusMessage] = useState('');
   const navigate = useNavigate();
 
@@ -46,6 +46,16 @@ function Register({ setUser }) {
             onChange={(e) => setPassword(e.target.value)}
             required
           />
+
+          <select
+            value={role}
+            onChange={(e) => setRole(e.target.value)}
+            required
+          >
+            <option value="visitor">Visitor</option>
+            <option value="staff">Staff</option>
+            <option value="admin">Admin</option>
+          </select>
           <button type="submit">Register</button>
         </form>
         {statusMessage && <div className="status-message">{statusMessage}</div>}

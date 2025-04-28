@@ -4,6 +4,8 @@ import './Animals.css';
 import axios from 'axios';
 
 function Animals({ user }) {
+  console.log('User in Animals page:', user);
+
     const [animals, setAnimals] = useState([]);
     const [searchItem, setSearchItem] = useState('');
     const [message, setMessage] = useState('');

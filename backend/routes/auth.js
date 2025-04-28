@@ -23,7 +23,7 @@ router.post('/register', async (req, res) => {
     await db.query('INSERT INTO users (username, password_hash, role) VALUES (?, ?, ?)', [
       username,
       hashedPassword,
-      'visitor'
+      role
     ]);
 
     res.status(201).json({ message: 'User registered successfully' });
