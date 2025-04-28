@@ -125,16 +125,31 @@ function Animals({ user }) {
             <ul className="admin-animal-list">
   {animals.map(animal => (
     <li key={animal.AnimalID}>
+      <div className="animal-info">
+        <div>
+          <strong>ID:</strong> {animal.AnimalID}
+        </div>
+        <div>
+          <strong>Name:</strong> {animal.Name}
+        </div>
+        <div>
+          <strong>Species:</strong> {animal.Species}
+        </div>
+        <div>
+          <strong>Age:</strong> {animal.Age} years old
+        </div>
+        <div>
+          <strong>Gender:</strong> {animal.Gender}</div>
+      {animal.ImageURL && (
       <div>
-        <strong>{animal.AnimalID} {animal.Name}</strong> - {animal.Species}, {animal.Age} years old, {animal.Gender}
-        {animal.ImageURL && (
-          <img 
-            src={animal.ImageURL} 
-            alt={animal.Name} 
-            className="admin-animal-image"
-          />
-        )}
+        <img 
+          src={animal.ImageURL} 
+          alt={animal.Name} 
+          className="admin-animal-image"
+        />
       </div>
+    )}
+  </div>
       {(user?.role === 'staff' || user?.role === 'admin') && (
         <button className="delete-button" onClick={() => handleDelete(animal.AnimalID)}>❌ Delete</button>
       )}

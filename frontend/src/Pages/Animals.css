@@ -66,6 +66,20 @@
   background-color: white;
   color: #333;
 }
+.animal-info {
+  display: grid;
+  grid-template-columns: 1fr 2fr 2fr 2fr 3fr 2fr 1fr;
+  column-gap: 20px;
+  align-items: center;
+  padding: 8px 16px;
+  border-radius: 6px;
+  background: white;
+  margin-bottom: 8px;
+  font-size: 14px;
+  width: 98%;
+  list-style: none;
+  letter-spacing: 1px;
+}
 
 .add-form button {
   padding: 10px 20px;
