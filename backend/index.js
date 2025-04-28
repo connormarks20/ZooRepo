@@ -137,6 +137,69 @@ app.delete('/visitors/:id', (req, res) => {
   });
 });
 
+/* function for entering data into the top search bar (for Staff) */
+app.get('/staff', (req, res) => {
+  const search = req.query.search || '';
+
+
+  let query = 'SELECT * FROM Staff';
+  let params = [];
+
+
+  if (search) {
+    query += ' WHERE Name LIKE ? OR EmployeeID LIKE ? OR DepartmentID LIKE ?';
+    const searchTerm = `%${search}%`;
+    params = [searchTerm, searchTerm, searchTerm];
+  }
+
+
+  db.query(query, params, (err, results) => {
+    if (err) {
+      console.error('error querying staff table', err);
+      return res.status(500).send('Internal error');
+    }
+    res.json(results);
+  });
+});
+
+
+/* function for adding staff to the database */
+app.post('/staff', (req, res) => {
+  const { Name, Salary, WeeklySchedule, DepartmentID } = req.body;
+  console.log("incoming staff data: ", req.body);
+
+
+  const query = 'INSERT INTO Staff (Name, Salary, WeeklySchedule, DepartmentID) VALUES (?,?,?,?)';
+
+
+  db.query(query, [Name, Salary, WeeklySchedule, DepartmentID], (err, result) => {
+    if (err) {
+      console.error("Error inserting staff", err);
+      return res.status(500).json({error: 'Insert failed'});
+    }
+    res.status(201).json({ id: result.insertId });
+  });
+});
+
+
+/* function for deleting staff from db by id (EmployeeID) */
+app.delete('/staff/:id', (req, res) => {
+  const employeeID = req.params.id;
+  console.log("incoming delete for staff", employeeID);
+
+
+  db.query('DELETE FROM Staff WHERE EmployeeID = ?', [employeeID], (err, result) => {
+    if (err) {
+      console.error('Error deleting staff:', err);
+      return res.status(500).send('Delete failed');
+    }
+    console.log(`Deleting EmployeeID:`, employeeID, typeof employeeID);
+
+
+    res.status(200).send('Staff record deleted');
+  });
+});
+
 /* function for entering data into the top search bar */
 app.get('/facilities', (req, res) => {
   const search = req.query.search || '';
