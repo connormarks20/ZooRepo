@@ -7,8 +7,6 @@ function Home() {
   const [animals, setAnimals] = useState([]);
   const [searchItem, setSearchItem] = useState([]);
   const [expandedId, setExpandedId] = useState([]);
-  const [visitors, setVisitors] = useState([]);
-  const [searchVisitor, setSearchVisitor] = useState('');
   
   useEffect(() => {
     axios

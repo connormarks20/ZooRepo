@@ -12,7 +12,7 @@ function Animals() {
         Species: '',
         Age: '',
         Gender: '',
-        ImageURL: 'https://eagle-sensors.com/wp-content/uploads/unavailable-image.jpg'
+        ImageURL: ''
       });
   
     const fetchAnimals = () => {

@@ -210,7 +210,7 @@ app.get('/facilities', (req, res) => {
   if (search) {
     query += ' WHERE Name LIKE ? OR Type LIKE ? OR Location LIKE ? OR Description LIKE ?';
     const searchTerm = `%${search}%`;
-    params = [searchTerm, searchTerm, searchTer, searchTerm];
+    params = [searchTerm, searchTerm, searchTerm, searchTerm];
   }
 
   db.query(query, params, (err, results) => {
