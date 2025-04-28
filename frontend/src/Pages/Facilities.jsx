@@ -17,7 +17,9 @@ function Facilities({ user }) {
 
   const fetchFacilities = () => {
     axios
-      .get(`http://localhost:3001/facilities${searchFacility ? `?search=${searchFacility}` : ''}`)
+      .get(`http://localhost:3001/facilities${searchFacility ? `?search=${searchFacility}` : ''}`, {
+        withCredentials: true
+      })
       .then(res => setFacilitiesList(res.data))
       .catch(err => console.error('Fetch facilities failed:', err));
   };
@@ -50,7 +52,9 @@ function Facilities({ user }) {
   };
 
   const handleDelete = (name) => {
-    axios.delete(`http://localhost:3001/facilities/${name}`)
+    axios.delete(`http://localhost:3001/facilities/${name}`, {
+      withCredentials: true
+    })
       .then(() => {
         setMessage('Facility successfully deleted');
         setFacilitiesList(prev => prev.filter(facility => facility.Name !== name));

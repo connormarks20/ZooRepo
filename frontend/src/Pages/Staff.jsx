@@ -57,7 +57,9 @@ function Staff() {
 
 
   const handleDelete = (id) => {
-    axios.delete(`http://localhost:3001/staff/${id}`)
+    axios.delete(`http://localhost:3001/staff/${id}`, {
+      withCredentials: true
+    })
       .then(() => {
         setMessage('Staff member successfully deleted');
         setStaffList(prevStaff => prevStaff.filter(staff => staff.EmployeeID !== id));

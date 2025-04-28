@@ -49,7 +49,9 @@ function Visitors() {
   };
 
   const handleDelete = (id) => {
-    axios.delete(`http://localhost:3001/visitors/${id}`)
+    axios.delete(`http://localhost:3001/visitors/${id}`, {
+      withCredentials: true
+    })
       .then(() => {
         setMessage('Visitor successfully deleted');
         setVisitors(prevVisitors => prevVisitors.filter(visitor => visitor.VisitorID !== id));

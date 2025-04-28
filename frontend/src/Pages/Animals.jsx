@@ -38,7 +38,9 @@ function Animals({ user }) {
     }
   
     const handleDelete = (id) => {
-      axios.delete(`http://localhost:3001/animals/${id}`)
+      axios.delete(`http://localhost:3001/animals/${id}`, {
+        withCredentials: true
+      })
         .then(() => {
           // update UI immediately 
           setMessage("Animal successfully deleted");
