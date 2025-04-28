@@ -106,7 +106,7 @@ function Staff() {
 
 
       <div className="staff-page">
-        <h1>  🧑‍💼  Zoo Staff Database 🧑‍💼 </h1>
+
         {message && <div className="status-message">{message}</div>}
 
 

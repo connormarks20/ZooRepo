@@ -93,7 +93,6 @@ function Facilities() {
       </div>
 
       <div className="facilities-page">
-        <h1>🏢 Facilities Database 🏢</h1>
         {message && <div className="status-message">{message}</div>}
 
         <div className="facilities-list-header">

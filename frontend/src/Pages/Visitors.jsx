@@ -92,7 +92,6 @@ function Visitors() {
       </div>
 
       <div className="visitor-page">
-        <h1>🧍‍♂️🧍‍♀️ Zoo Visitors Database 🧍‍♀️🧍‍♂️</h1>
         {message && <div className="status-message">{message}</div>}
 
         <div className="visitor-list-header">
