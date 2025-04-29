@@ -11,7 +11,6 @@ function StatisticsStaff() {
   });
 
   useEffect(() => {
-    // Fetch visitor data from the server (adjust the URL as necessary)
     axios.get('http://localhost:3001/visitors', { withCredentials: true })
       .then(response => {
         console.log("Visitor Data Response:", response.data);
@@ -24,23 +23,18 @@ function StatisticsStaff() {
 
   useEffect(() => {
     if (visitorData.length > 0) {
-      // Calculate total visitors
       const totalVisitors = visitorData.length;
 
-      // Calculate total amount spent by all visitors
       const totalAmountSpent = visitorData.reduce((acc, visitor) => acc + parseFloat(visitor.AmountSpent.replace('$', '')), 0);
 
-      // Count the first-time visitors
       const firstVisitCount = visitorData.filter(visitor => visitor.History === 'First visit').length;
 
-      // Calculate the number of visitors by membership type
       const visitorsByMembership = visitorData.reduce((acc, visitor) => {
         const membership = visitor.Membership || 'Unknown';
         acc[membership] = (acc[membership] || 0) + 1;
         return acc;
       }, {});
 
-      // Update the statistics state
       setStatistics({
         totalVisitors,
         totalAmountSpent,
