@@ -18,6 +18,7 @@ import Facilities from './Pages/Facilities';
 import Login from './Pages/Login';
 import Register from './Pages/Register';
 import AdminDashboard from './Pages/AdminDashboard';
+import StatisticsAdmin from './Pages/StatisticsAdmin';
 
 function TopBar({ searchFacility, setSearchFacility, setSearchAnimal, setSearchVisitor, setSearchStaff, user, setUser }) {
   const location = useLocation();
@@ -65,6 +66,7 @@ function TopBar({ searchFacility, setSearchFacility, setSearchAnimal, setSearchV
         {!user && <Link to="/login">Login</Link>}
         {!user && <Link to="/register">Register</Link>}
         {user?.role === 'admin' && <Link to="/admin">Admin Dashboard</Link>}
+        {user?.role === 'admin' && <Link to="/statisticsAdmin">Statistics</Link>}
         {user && <Link to="#" onClick={handleLogout}>Logout</Link>}
       </nav>
 
@@ -133,6 +135,13 @@ function App() {
           <Route path="/visitors" element={
             user?.role === 'staff' || user?.role === 'admin'
               ? <Visitors user={user} searchVisitor={searchVisitor}/>
+              : <Navigate to="/" />
+          } />
+
+          {/* Statistics page - statistics/admin only */}
+          <Route path="/statisticsAdmin" element={
+            user?.role === 'statisticsAdmin' || user?.role === 'admin'
+              ? <StatisticsAdmin/>
               : <Navigate to="/" />
           } />
 

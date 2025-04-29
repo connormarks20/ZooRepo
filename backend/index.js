@@ -133,7 +133,7 @@ app.delete('/visitors/:id', async (req, res) => {
 // ----- Staff -----
 app.get('/staff', async (req, res) => {
   const search = req.query.search || '';
-  let query = 'SELECT * FROM Staff';
+  let query = 'SELECT EmployeeID, Name, Salary, DepartmentID FROM Staff';
   let params = [];
 
   if (search) {
@@ -144,7 +144,7 @@ app.get('/staff', async (req, res) => {
 
   try {
     const [results] = await db.query(query, params);
-    res.json(results);
+    res.json(results); // Make sure salary and departmentID are included here
   } catch (err) {
     console.error('Error querying Staff table', err);
     res.status(500).send('Internal server error');
