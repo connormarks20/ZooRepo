@@ -20,6 +20,7 @@ import Register from './Pages/Register';
 import AdminDashboard from './Pages/AdminDashboard';
 import StatisticsAdmin from './Pages/StatisticsAdmin';
 import StatisticsVisitor from './Pages/StatisticsVisitor';
+import StatisticsStaff from './Pages/StatisticsStaff';
 
 function TopBar({ searchFacility, setSearchFacility, setSearchAnimal, setSearchVisitor, setSearchStaff, user, setUser }) {
   const location = useLocation();
@@ -67,8 +68,9 @@ function TopBar({ searchFacility, setSearchFacility, setSearchAnimal, setSearchV
         {!user && <Link to="/login">Login</Link>}
         {!user && <Link to="/register">Register</Link>}
         {user?.role === 'admin' && <Link to="/admin">Admin Dashboard</Link>}
-        {user?.role === 'admin' && <Link to="/statisticsAdmin">Statistics</Link>}
+        {user?.role === 'admin' && <Link to="/statisticsAdmin">Statistics Admin</Link>}
         {user?.role === 'visitor' && <Link to="/statisticsVisitor">Statistics Visitor</Link>}
+        {user?.role === 'staff' && <Link to="/statisticsStaff">Statistics Staff</Link>}
         {user && <Link to="#" onClick={handleLogout}>Logout</Link>}
       </nav>
 
@@ -140,19 +142,27 @@ function App() {
               : <Navigate to="/" />
           } />
 
-          {/* Statistics page - statistics/admin only */}
+          {/* Statistics page - statisticsAdmin only */}
           <Route path="/statisticsAdmin" element={
             user?.role === 'statisticsAdmin' || user?.role === 'admin'
               ? <StatisticsAdmin/>
               : <Navigate to="/" />
           } />
 
-          {/* Statistics page - statistics/Visitor only */}
+          {/* Statistics page - statisticsVisitor only */}
             <Route path="/statisticsVisitor" element={
-            user?.role === 'statisticsVisitor' || user?.role === 'admin'
+            user?.role === 'statisticsVisitor' || user?.role === 'visitor'
               ? <StatisticsVisitor/>
               : <Navigate to="/" />
           } />
+
+          {/* Statistics page - statisticsStaff only */}
+          <Route path="/statisticsStaff" element={
+            user?.role === 'statisticsStaff' || user?.role === 'staff'
+              ? <StatisticsStaff/>
+              : <Navigate to="/" />
+          } />
+
           {/* Admin Dashboard - admin only */}
           <Route path="/admin" element={
             user?.role === 'admin'
