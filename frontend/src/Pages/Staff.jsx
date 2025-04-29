@@ -1,14 +1,10 @@
 import React, { useEffect, useState } from 'react';
-import { Link } from 'react-router-dom';
 import axios from 'axios';
 import './Staff.css'; 
 
-
-function Staff() {
+function Staff({ user, searchStaff }) {
   const [staffList, setStaffList] = useState([]);
-  const [searchStaff, setSearchStaff] = useState('');
   const [message, setMessage] = useState('');
-
 
   const [newStaff, setNewStaff] = useState({
     EmployeeID: '',
@@ -18,43 +14,50 @@ function Staff() {
     DepartmentID: ''
   });
 
-
   const fetchStaff = () => {
     axios
-      .get(`http://localhost:3001/staff${searchStaff ? `?search=${searchStaff}` : ''}`)
+      .get(`http://localhost:3001/staff${searchStaff ? `?search=${searchStaff}` : ''}`, {
+        withCredentials: true
+      })
       .then(res => setStaffList(res.data))
       .catch(err => console.error('Fetch staff failed:', err));
   };
 
-
   const handleAddStaff = (e) => {
     e.preventDefault();
-    axios.post('http://localhost:3001/staff', newStaff, {
+
+    const staffToSubmit = {
+      EmployeeID: parseInt(newStaff.EmployeeID, 10),
+      Name: newStaff.Name,
+      Salary: parseFloat(newStaff.Salary).toFixed(2),
+      WeeklySchedule: newStaff.WeeklySchedule,
+      DepartmentID: newStaff.DepartmentID
+    };
+  
+    axios.post('http://localhost:3001/staff', staffToSubmit, {
       withCredentials: true
     })
-      .then(() => {
-        setNewStaff({
-          EmployeeID: '',
-          Name: '',
-          Salary: '',
-          WeeklySchedule: '',
-          DepartmentID: ''
-        });
-        setSearchStaff(''); 
-        setMessage('Staff member successfully added');
-        fetchStaff();
-        setTimeout(() => setMessage(''), 10000);
-      })
-      .catch(err => {
-        console.error('Staff addition failed:', err);
-        if (err.response && err.response.data && err.response.data.error) {
-          setMessage(`Error: ${err.response.data.error}`);
-        } else {
-          setMessage('Unknown error occurred.');
-        }
-      }); 
-    };
-
+    .then(() => {
+      setNewStaff({
+        EmployeeID: '',
+        Name: '',
+        Salary: '',
+        WeeklySchedule: '',
+        DepartmentID: ''
+      });
+      setMessage('Staff member successfully added');
+      fetchStaff();
+      setTimeout(() => setMessage(''), 10000);
+    })
+    .catch(err => {
+      console.error('Staff addition failed:', err);
+      if (err.response && err.response.data && err.response.data.error) {
+        setMessage(`Error: ${err.response.data.error}`);
+      } else {
+        setMessage('Unknown error occurred.');
+      }
+    });
+  };
 
   const handleDelete = (id) => {
     axios.delete(`http://localhost:3001/staff/${id}`, {
@@ -63,38 +66,30 @@ function Staff() {
       .then(() => {
         setMessage('Staff member successfully deleted');
         setStaffList(prevStaff => prevStaff.filter(staff => staff.EmployeeID !== id));
+        setTimeout(() => setMessage(''), 10000);
       })
       .catch(err => console.error('Staff delete failed:', err));
   };
 
-
   useEffect(() => {
     fetchStaff();
-  }, []);
-
-
-  useEffect(() => {
-    if (searchStaff !== '') {
-      axios.get(`http://localhost:3001/staff?search=${searchStaff}`)
-        .then(res => setStaffList(res.data))
-        .catch(err => console.error('Search staff failed:', err));
-    } else {
-      fetchStaff();
-    }
-  }, [searchStaff]);
-
+  }, [searchStaff]); 
 
   return (
     <>
       <div className="staff-page">
-
         {message && <div className="status-message">{message}</div>}
-
 
         <div className="staff-list-header">
           <h2>Staff List</h2>
           <form className="add-form" onSubmit={handleAddStaff}>
-            
+            <input
+              type="text"
+              placeholder="EmployeeID"
+              value={newStaff.EmployeeID}  
+              onChange={(e) => setNewStaff({ ...newStaff, EmployeeID: e.target.value })}
+              required
+            />
             <input
               type="text"
               placeholder="Name"
@@ -125,7 +120,6 @@ function Staff() {
           </form>
         </div>
 
-
         <ul className="staff-list">
           {staffList.map(staff => (
             <li key={staff.EmployeeID} className="staff-item">
@@ -153,6 +147,4 @@ function Staff() {
   );
 }
 
-
 export default Staff;
-

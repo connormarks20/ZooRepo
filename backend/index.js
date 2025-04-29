@@ -17,7 +17,7 @@ app.use(session({
   secret: 'we_bought_a_zoo',
   resave: false,
   saveUninitialized: false,
-  cookie: { secure: false }
+  cookie: { secure: false, maxAge: 1000 * 60 * 60 }
 }));
 
 app.use('/api/auth', authRoutes);
@@ -56,11 +56,11 @@ app.post('/animals', async (req, res) => {
     return res.status(403).send('Forbidden');
   }
 
-  const { Name, Species, Age, Gender, ImageURL } = req.body;
-  const query = 'INSERT INTO Animal (Name, Species, Age, Gender, ImageURL) VALUES (?,?,?,?,?)';
+  const { Name, Species, Age, Gender} = req.body;
+  const query = 'INSERT INTO Animal (Name, Species, Age, Gender) VALUES (?,?,?,?)';
   
   try {
-    const [result] = await db.query(query, [Name, Species, Age, Gender, ImageURL]);
+    const [result] = await db.query(query, [Name, Species, Age, Gender]);
     res.status(201).json({ id: result.insertId });
   } catch (err) {
     console.error('Error inserting animal', err);
@@ -152,15 +152,19 @@ app.get('/staff', async (req, res) => {
 });
 
 app.post('/staff', async (req, res) => {
-  const { Name, Salary, WeeklySchedule, DepartmentID } = req.body;
-  const query = 'INSERT INTO Staff (Name, Salary, WeeklySchedule, DepartmentID) VALUES (?,?,?,?)';
-  
+  const { EmployeeID, Name, Salary, WeeklySchedule, DepartmentID } = req.body;
+  const query = 'INSERT INTO Staff (EmployeeID, Name, Salary, WeeklySchedule, DepartmentID) VALUES (?,?,?,?,?)';
+
   try {
-    const [result] = await db.query(query, [Name, Salary, WeeklySchedule, DepartmentID]);
+    const [result] = await db.query(query, [EmployeeID, Name, Salary, WeeklySchedule, DepartmentID]);
     res.status(201).json({ id: result.insertId });
   } catch (err) {
-    console.error('Error inserting staff', err);
-    res.status(500).send('Insert failed');
+    console.error('Error inserting staff:', err.message); 
+
+    //if there is no facility
+    if (err.code === 'ER_NO_REFERENCED_ROW_2') {
+      return res.status(400).json({ error: 'Invalid DepartmentID: No matching facility exists.' });
+    }    res.status(500).send('Insert failed');
   }
 });
 
@@ -215,20 +219,27 @@ app.post('/facilities', async (req, res) => {
 });
 
 app.delete('/facilities/:name', async (req, res) => {
-  if (!req.session.user || (req.session.user.role !== 'staff' && req.session.user.role !== 'admin')) {
-    return res.status(403).send('Forbidden');
-  }
-
   const facilityName = req.params.name;
   
   try {
-    await db.query('DELETE FROM Facilities WHERE Name = ?', [facilityName]);
+    const [result] = await db.query('DELETE FROM Facilities WHERE Name = ?', [facilityName]);
+
+    if (result.affectedRows === 0) {
+      return res.status(404).send('Facility not found');
+    }
+
     res.status(200).send('Facility deleted');
   } catch (err) {
-    console.error('Error deleting facility', err);
+    console.error('Error deleting facility:', err);
+
+    if (err.code === 'ER_ROW_IS_REFERENCED_2') {
+      return res.status(400).json({ error: 'Cannot delete facility: staff are assigned to it.' });
+    }
+
     res.status(500).send('Delete failed');
   }
 });
+
 
 // ----- Admin Dashboard -----
 // Get all users (Admin only)

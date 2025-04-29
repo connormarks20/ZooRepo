@@ -19,11 +19,11 @@ import Login from './Pages/Login';
 import Register from './Pages/Register';
 import AdminDashboard from './Pages/AdminDashboard';
 
-function TopBar({ searchFacility, setSearchFacility, user, setUser }) {
+function TopBar({ searchFacility, setSearchFacility, setSearchAnimal, setSearchVisitor, setSearchStaff, user, setUser }) {
   const location = useLocation();
-  const currentPath = location.pathname;
   const navigate = useNavigate();
 
+  const currentPath = location.pathname;
 
   // Only show search input on these pages
   const showSearchBar = ['/animals', '/staff', '/visitors', '/facilities'].includes(currentPath);
@@ -31,12 +31,26 @@ function TopBar({ searchFacility, setSearchFacility, user, setUser }) {
   const handleLogout = async () => {
     try {
       await axios.post('http://localhost:3001/api/auth/logout', {}, { withCredentials: true });
-      setUser(null); // clear user on frontend
+      setUser(null);
       navigate('/');
     } catch (err) {
       console.error('Logout failed', err);
     }
   };
+
+  const handleSearchChange = (e) => {
+    const value = e.target.value;  
+    if (currentPath === '/animals') {
+      setSearchAnimal(value);
+    } else if (currentPath === '/facilities') {
+      setSearchFacility(value);
+    } else if (currentPath === '/visitors') {
+      setSearchVisitor(value);
+    } else if (currentPath === '/staff') {
+      setSearchStaff(value);
+    }
+  };
+  
 
   return (
     <div className="top-bar">
@@ -52,25 +66,29 @@ function TopBar({ searchFacility, setSearchFacility, user, setUser }) {
         {!user && <Link to="/register">Register</Link>}
         {user?.role === 'admin' && <Link to="/admin">Admin Dashboard</Link>}
         {user && <Link to="#" onClick={handleLogout}>Logout</Link>}
-        </nav>
+      </nav>
 
       {showSearchBar && (
         <input
           type="text"
           placeholder="Search List..."
           className="search-bar"
-          value={searchFacility}
-          onChange={(e) => setSearchFacility(e.target.value)}
+          onChange={handleSearchChange}  // 🔥 Use the dynamic handler
         />
       )}
     </div>
   );
 }
 
+
 function App() {
-  const [searchFacility, setSearchFacility] = useState('');
   const [user, setUser] = useState(null);
   const [loading, setLoading] = useState(true);
+  const [searchFacility, setSearchFacility] = useState('');
+  const [searchAnimal, setSearchAnimal] = useState('');
+  const [searchVisitor, setSearchVisitor] = useState('');
+  const [searchStaff, setSearchStaff] = useState('');
+
 
   // On app load, check if user is logged in
   useEffect(() => {
@@ -90,24 +108,31 @@ function App() {
   return (
     <Router>
       <div className="app">
-        <TopBar searchFacility={searchFacility} setSearchFacility={setSearchFacility} user={user} setUser={setUser} />
+      <TopBar 
+        setSearchFacility={setSearchFacility} 
+        setSearchAnimal={setSearchAnimal}
+        setSearchVisitor={setSearchVisitor}
+        setSearchStaff={setSearchStaff}
+        user={user} 
+        setUser={setUser} 
+      />
 
         <Routes>
           <Route path="/" element={<Home />} />
-          <Route path="/animals" element={<Animals user={user} />} />
-          <Route path="/facilities" element={<Facilities user={user} />} />
+          <Route path="/animals" element={<Animals user={user} searchAnimal={searchAnimal}/>} />
+          <Route path="/facilities" element={<Facilities user={user} searchFacility={searchFacility}/>} />
           
           {/* Staff page - staff/admin only */}
           <Route path="/staff" element={
             user?.role === 'staff' || user?.role === 'admin'
-              ? <Staff user={user} />
+              ? <Staff user={user} searchStaff={searchStaff} />
               : <Navigate to="/" />
           } />
 
           {/* Visitors page - staff/admin only */}
           <Route path="/visitors" element={
             user?.role === 'staff' || user?.role === 'admin'
-              ? <Visitors user={user} />
+              ? <Visitors user={user} searchVisitor={searchVisitor}/>
               : <Navigate to="/" />
           } />
 

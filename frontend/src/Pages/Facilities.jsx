@@ -1,11 +1,10 @@
 import React, { useEffect, useState } from 'react';
 import { Link } from 'react-router-dom'; 
 import axios from 'axios';
-import './Facilities.css'; // You should create Facilities.css or copy styling from Staff.css
+import './Facilities.css';
 
-function Facilities({ user }) {
+function Facilities({ user, searchFacility }) {
   const [facilitiesList, setFacilitiesList] = useState([]);
-  const [searchFacility, setSearchFacility] = useState('');
   const [message, setMessage] = useState('');
 
   const [newFacility, setNewFacility] = useState({
@@ -36,7 +35,6 @@ function Facilities({ user }) {
           Location: '',
           Description: ''
         });
-        setSearchFacility(''); 
         setMessage('Facility successfully added');
         fetchFacilities();
         setTimeout(() => setMessage(''), 10000);
@@ -58,23 +56,22 @@ function Facilities({ user }) {
       .then(() => {
         setMessage('Facility successfully deleted');
         setFacilitiesList(prev => prev.filter(facility => facility.Name !== name));
+        setTimeout(() => setMessage(''), 10000);
       })
-      .catch(err => console.error('Facility delete failed:', err));
+      .catch(err => {
+        console.error('Facility delete failed:', err);
+        if (err.response && err.response.data && err.response.data.error) {
+          setMessage(`Error: ${err.response.data.error}`);
+        } else {
+          setMessage('Unknown error occurred.');
+        }
+      });
   };
+  
 
   useEffect(() => {
     fetchFacilities();
-  }, []);
-
-  useEffect(() => {
-    if (searchFacility !== '') {
-      axios.get(`http://localhost:3001/facilities?search=${searchFacility}`)
-        .then(res => setFacilitiesList(res.data))
-        .catch(err => console.error('Search facilities failed:', err));
-    } else {
-      fetchFacilities();
-    }
-  }, [searchFacility]);
+  }, [searchFacility]); 
 
   return (
     <>
@@ -119,26 +116,26 @@ function Facilities({ user }) {
         </div>
 
         <ul className="facilities-list">
-        {facilitiesList.map(facility => (
-        <li key={facility.Name} className="facility-row">
-            <div className="facility-column">
-            <strong>Type:</strong> {facility.Type}
-            </div>
-            <div className="facility-column">
-            <strong>Name:</strong> {facility.Name}
-            </div>
-            <div className="facility-column">
-            <strong>Location:</strong> {facility.Location}
-            </div>
-            <div className="facility-column">
-            <strong>Description:</strong> {facility.Description || 'N/A'}
-            </div>
-            {(user?.role === 'staff' || user?.role === 'admin') && (
-              <button className="delete-button" onClick={() => handleDelete(facility.Name)}>❌ Delete</button>
-            )}
-        </li>
-    ))}
-  </ul>
+          {facilitiesList.map(facility => (
+            <li key={facility.Name} className="facility-row">
+              <div className="facility-column">
+                <strong>Type:</strong> {facility.Type}
+              </div>
+              <div className="facility-column">
+                <strong>Name:</strong> {facility.Name}
+              </div>
+              <div className="facility-column">
+                <strong>Location:</strong> {facility.Location}
+              </div>
+              <div className="facility-column">
+                <strong>Description:</strong> {facility.Description || 'N/A'}
+              </div>
+              {(user?.role === 'staff' || user?.role === 'admin') && (
+                <button className="delete-button" onClick={() => handleDelete(facility.Name)}>❌ Delete</button>
+              )}
+            </li>
+          ))}
+        </ul>
       </div>
     </>
   );

@@ -1,15 +1,12 @@
 import React, { useEffect, useState } from 'react';
-import { Link } from 'react-router-dom'; 
 import axios from 'axios';
 import './Visitors.css';
 
-function Visitors() {
+function Visitors({ searchVisitor }) {
   const [visitors, setVisitors] = useState([]);
-  const [searchVisitor, setSearchVisitor] = useState('');
   const [message, setMessage] = useState('');
-  
+
   const [newVisitor, setNewVisitor] = useState({
-    VisitorID: '',
     Name: '',
     GroupID: '',
     DateOfVisit: '',
@@ -32,7 +29,6 @@ function Visitors() {
     })
       .then(() => {
         setNewVisitor({
-          VisitorID: '',
           Name: '',
           GroupID: '',
           DateOfVisit: '',
@@ -40,7 +36,6 @@ function Visitors() {
           History: '',
           MembershipType: ''
         });
-        setSearchVisitor(''); // refresh visitor list
         setMessage('Visitor successfully added');
         fetchVisitors();
         setTimeout(() => setMessage(''), 10000);
@@ -55,22 +50,13 @@ function Visitors() {
       .then(() => {
         setMessage('Visitor successfully deleted');
         setVisitors(prevVisitors => prevVisitors.filter(visitor => visitor.VisitorID !== id));
+        setTimeout(() => setMessage(''), 10000);
       })
       .catch(err => console.error('Visitor delete failed:', err));
   };
 
   useEffect(() => {
     fetchVisitors();
-  }, []);
-
-  useEffect(() => {
-    if (searchVisitor !== '') {
-      axios.get(`http://localhost:3001/visitors?search=${searchVisitor}`)
-        .then(res => setVisitors(res.data))
-        .catch(err => console.error('Search visitors failed:', err));
-    } else {
-      fetchVisitors();
-    }
   }, [searchVisitor]);
 
   return (
@@ -123,37 +109,20 @@ function Visitors() {
           </form>
         </div>
 
-
         <ul className="visitor-list">
-  {visitors.map(visitor => (
-    <li key={visitor.VisitorID} className="visitor-item">
-      <div className="visitor-attributes">
-        <strong>ID:</strong> {visitor.VisitorID}
-      </div>
-      <div className="visitor-attributes">
-        <strong>Name:</strong> {visitor.Name}
-      </div>
-      <div className="visitor-attributes">
-        <strong>Group:</strong> {visitor.GroupID || 'N/A'}
-      </div>
-      <div className="visitor-attributes">
-        <strong>Date Visited:</strong> {new Date(visitor.DateOfVisit).toLocaleDateString()}
-      </div>
-      <div className="visitor-attributes">
-        <strong>Amount Spent:</strong> ${visitor.AmountSpent || '0.00'}
-      </div>
-      <div className="visitor-attributes">
-        <strong>History:</strong> {visitor.History || 'N/A'}
-      </div>
-      <div className="visitor-attributes">
-        <strong>Membership:</strong> {visitor.MembershipType || 'None'}
-      </div>
-      <button className="delete-button" onClick={() => handleDelete(visitor.VisitorID)}>❌ Delete</button>
-    </li>
-  ))}
-</ul>
-
-
+          {visitors.map(visitor => (
+            <li key={visitor.VisitorID} className="visitor-item">
+              <div className="visitor-attributes"><strong>ID:</strong> {visitor.VisitorID}</div>
+              <div className="visitor-attributes"><strong>Name:</strong> {visitor.Name}</div>
+              <div className="visitor-attributes"><strong>Group:</strong> {visitor.GroupID || 'N/A'}</div>
+              <div className="visitor-attributes"><strong>Date Visited:</strong> {new Date(visitor.DateOfVisit).toLocaleDateString()}</div>
+              <div className="visitor-attributes"><strong>Amount Spent:</strong> ${visitor.AmountSpent || '0.00'}</div>
+              <div className="visitor-attributes"><strong>History:</strong> {visitor.History || 'N/A'}</div>
+              <div className="visitor-attributes"><strong>Membership:</strong> {visitor.MembershipType || 'None'}</div>
+              <button className="delete-button" onClick={() => handleDelete(visitor.VisitorID)}>❌ Delete</button>
+            </li>
+          ))}
+        </ul>
       </div>
     </>
   );
