@@ -56,11 +56,11 @@ app.post('/animals', async (req, res) => {
     return res.status(403).send('Forbidden');
   }
 
-  const { Name, Species, Age, Gender} = req.body;
-  const query = 'INSERT INTO Animal (Name, Species, Age, Gender) VALUES (?,?,?,?)';
+  const { Name, Species, Age, Gender, ImageURL} = req.body;
+  const query = 'INSERT INTO Animal (Name, Species, Age, Gender, ImageURL) VALUES (?,?,?,?,?)';
   
   try {
-    const [result] = await db.query(query, [Name, Species, Age, Gender]);
+    const [result] = await db.query(query, [Name, Species, Age, Gender, ImageURL]);
     res.status(201).json({ id: result.insertId });
   } catch (err) {
     console.error('Error inserting animal', err);

@@ -10,8 +10,15 @@ function Animals({ user, searchAnimal }) {
     Name: '',
     Species: '',
     Age: '',
-    Gender: ''
+    Gender: '',
+    ImageURL: ''
   });
+
+  const getImageURL = (animal) => {
+    return animal.ImageURL && animal.ImageURL.trim() !== ''
+      ? animal.ImageURL
+      : 'https://eagle-sensors.com/wp-content/uploads/unavailable-image.jpg';
+  };
 
   const fetchAnimals = () => {
     const url = `http://localhost:3001/animals${searchAnimal ? `?search=${searchAnimal}` : ''}`;
@@ -28,7 +35,7 @@ function Animals({ user, searchAnimal }) {
       withCredentials: true
     })
     .then(() => {
-      setNewAnimal({ Name: '', Species: '', Age: '', Gender: '' });
+      setNewAnimal({ Name: '', Species: '', Age: '', Gender: '', ImageURL: '' });
       setMessage("Animal successfully added");
       fetchAnimals(); // Refresh animals after adding
       setTimeout(() => setMessage(''), 10000);
@@ -63,31 +70,38 @@ function Animals({ user, searchAnimal }) {
           {(user?.role === 'staff' || user?.role === 'admin') && (
             <form className="add-form" onSubmit={handleAddAnimal}>
               <input 
-                type="text"
-                placeholder="Name"
-                value={newAnimal.Name}
-                onChange={(e) => setNewAnimal({...newAnimal, Name: e.target.value})}
-                required 
-              />
-              <input
+                  type="text"
+                  placeholder="Name"
+                  value={newAnimal.Name}
+                  onChange={(e)=>setNewAnimal({...newAnimal, Name: e.target.value})}
+                  required 
+                />
+                <input
                 type="text"
                 placeholder="Species"
                 value={newAnimal.Species}
                 onChange={(e) => setNewAnimal({...newAnimal, Species: e.target.value})}
                 required 
-              />
-              <input 
+                />
+                <input 
                 type="text"
                 placeholder="Gender"
                 value={newAnimal.Gender}
-                onChange={(e) => setNewAnimal({...newAnimal, Gender: e.target.value})}
-              />
-              <input 
+                onChange={(e)=>setNewAnimal({...newAnimal, Gender: e.target.value})}
+                />
+                <input 
                 type="text"
                 placeholder="Age"
                 value={newAnimal.Age}
-                onChange={(e) => setNewAnimal({...newAnimal, Age: e.target.value})}
-              />
+                onChange={(e)=>setNewAnimal({...newAnimal,Age: e.target.value})}
+                />
+                <input
+                type="text"
+                placeholder="Image URL"
+                value={newAnimal.ImageURL}
+                onChange={(e) => setNewAnimal({...newAnimal, ImageURL: e.target.value})}
+                
+                />
               <button type="submit">Add</button>
             </form>
           )}
@@ -102,6 +116,14 @@ function Animals({ user, searchAnimal }) {
                 <div><strong>Species:</strong> {animal.Species}</div>
                 <div><strong>Age:</strong> {animal.Age} years old</div>
                 <div><strong>Gender:</strong> {animal.Gender}</div>
+                {animal.ImageURL && (
+               <div>
+               <img 
+                 src={getImageURL(animal)}
+                 alt={animal.Name} 
+                 className="admin-animal-image"
+               />
+             </div>)}
               </div>
               {(user?.role === 'staff' || user?.role === 'admin') && (
                 <button className="delete-button" onClick={() => handleDelete(animal.AnimalID)}>❌ Delete</button>
