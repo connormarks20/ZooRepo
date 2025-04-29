@@ -1,81 +1,81 @@
 .staff-list-header-row div {
-    padding: 8px 6px;
-    overflow: hidden;
-    text-overflow: ellipsis;
-    white-space: nowrap;
-  }
- 
-  .staff-list {
-    padding-left: 0;
-  }
- 
-  .staff-list li {
-    display: grid;
-    grid-template-columns:1fr 2fr 2fr 2fr 2fr 3fr 2fr 1fr;
-    column-gap: 20px;
-    align-items: center;
-    padding: 8px 16px;
-    border: 1px solid #ddd;
-    border-radius: 6px;
-    background: white;
-    margin-bottom: 8px;
-    font-size: 14px;
-    width: 98%;
-    list-style: none;
-    letter-spacing: 1px;
-  }
+  padding: 8px 6px;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
 
-  .staff-attributes {
-    padding: 8px 16px; 
-    margin: 4px; 
-    border-radius: 4px; 
-    text-align: left; 
-    font-size: 16px; 
-  }
-  
- 
-  .staff-admin .admin-staff-list,
-  .staff-admin .staff-list {
-    list-style-type: none;
-    padding: 0;
-    margin: 0;
-    width: 100%;
-  }
- 
-  .staff-admin .admin-staff-list li,
-  .staff-admin .staff-list li {
-    display: grid;
-    grid-template-columns: 1fr 2fr 1fr 2fr 2fr 2fr 1fr auto;
-    background: white;
-    padding: 12px 20px;
-    margin-bottom: 8px;
-    border: 1px solid #ddd;
-    border-radius: 6px;
-    align-items: center;
-    text-align: left;
-    font-size: 14px;
-  }
- 
-  .staff-admin .admin-staff-list li strong,
-  .staff-admin .staff-list li strong {
-    font-weight: 600;
-  }
- 
-  .delete-button {
-    background-color: #ff5252;
-    color: white;
-    border: none;
-    padding: 6px 12px;
-    border-radius: 8px;
-    cursor: pointer;
-    font-weight: bold;
-    transition: all 0.2s ease-in-out;
-    justify-self: end;
-  }
- 
-  .delete-button:hover {
-    background-color: #ff0000;
-    transform: scale(1.05);
-  }
- 
+.staff-list {
+  padding-left: 0;
+}
+
+.staff-list li {
+  display: grid;
+  grid-template-columns:1fr 2fr 2fr 2fr 2fr 3fr 2fr 1fr;
+  column-gap: 20px;
+  align-items: center;
+  padding: 8px 16px;
+  border: 1px solid #ddd;
+  border-radius: 6px;
+  background: white;
+  margin-bottom: 8px;
+  font-size: 14px;
+  width: 98%;
+  list-style: none;
+  letter-spacing: 1px;
+}
+
+.staff-attributes {
+  padding: 8px 16px; 
+  margin: 4px; 
+  border-radius: 4px; 
+  text-align: left; 
+  font-size: 16px; 
+}
+
+
+.staff-admin .admin-staff-list,
+.staff-admin .staff-list {
+  list-style-type: none;
+  padding: 0;
+  margin: 0;
+  width: 100%;
+}
+
+.staff-admin .admin-staff-list li,
+.staff-admin .staff-list li {
+  display: grid;
+  grid-template-columns: 1fr 2fr 1fr 2fr 2fr 2fr 1fr auto;
+  background: white;
+  padding: 12px 20px;
+  margin-bottom: 8px;
+  border: 1px solid #ddd;
+  border-radius: 6px;
+  align-items: center;
+  text-align: left;
+  font-size: 14px;
+}
+
+.staff-admin .admin-staff-list li strong,
+.staff-admin .staff-list li strong {
+  font-weight: 600;
+}
+
+.delete-button {
+  background-color: #ff5252;
+  color: white;
+  border: none;
+  padding: 6px 12px;
+  border-radius: 8px;
+  cursor: pointer;
+  font-weight: bold;
+  transition: all 0.2s ease-in-out;
+  justify-self: end;
+}
+
+.delete-button:hover {
+  background-color: #ff0000;
+  transform: scale(1.05);
+}
+
 
