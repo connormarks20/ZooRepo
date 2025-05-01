@@ -56,14 +56,43 @@ app.post('/animals', async (req, res) => {
     return res.status(403).send('Forbidden');
   }
 
-  const { Name, Species, Age, Gender, ImageURL} = req.body;
-  const query = 'INSERT INTO Animal (Name, Species, Age, Gender, ImageURL) VALUES (?,?,?,?,?)';
-  
+  const { Name, Species, Age, Gender, ImageURL, Behavior, TransferHistory, Birthdate, Breed, ConservationStatus, Housing } = req.body;
+
+  // Clean Housing value
+  const housingValue = Housing === '' ? null : Housing;
+
+  const query = `
+    INSERT INTO Animal 
+    (Name, Species, Age, Gender, ImageURL, Behavior, TransferHistory, Birthday, Breed, ConservationStatus, Housing) 
+    VALUES (?,?,?,?,?,?,?,?,?,?,?)
+  `;
+
   try {
-    const [result] = await db.query(query, [Name, Species, Age, Gender, ImageURL]);
+
+    if (housingValue !== null) {
+
+      const [rows] = await db.query('SELECT Type FROM Facilities WHERE Type = ?', [housingValue]);
+      if (rows.length === 0) {
+        return res.status(400).send('Invalid Housing value: no matching facility found');
+      }
+    }
+
+    const [result] = await db.query(query, [
+      Name, 
+      Species, 
+      Age, 
+      Gender, 
+      ImageURL, 
+      Behavior, 
+      TransferHistory, 
+      Birthdate, 
+      Breed, 
+      ConservationStatus, 
+      housingValue
+    ]);
     res.status(201).json({ id: result.insertId });
   } catch (err) {
-    console.error('Error inserting animal', err);
+    console.error('Error inserting animal', err.message,err.stack );
     res.status(500).send('Insert failed');
   }
 });
