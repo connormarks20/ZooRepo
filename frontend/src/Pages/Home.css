@@ -104,11 +104,15 @@ color: #f39c12;
 
 .animal-card {
   background-color: #f9f9f9;
-  border: 1px solid #ddd;
+  border: 2px solid #ddd;
   border-radius: 12px;
   padding: 20px;
   width: 300px;
   box-shadow: 2px 2px 10px rgba(0,0,0,0.1);
+}
+
+.animal-card:hover {
+  background-color: #d3e9e6;
 }
 
 .animal-card h2 {
@@ -120,8 +124,33 @@ color: #f39c12;
 }
 
 .animals-page {
-  background-color: #e3f2fd; /* light blue */
+  background-color: #e3f2fd;
   padding: 40px;
   min-height: 100vh;
   box-sizing: border-box;
+}
+
+.animal-card.expanded {
+  transform: scale(1.05);
+  background-color: #cfe8fc;
+}
+
+.find-out-more {
+  margin-top: 10px;
+  text-align: center;
+}
+
+.find-out-more p {
+  font-weight: bold;
+  margin-bottom: 8px;
+}
+
+.find-out-more a {
+  color: #0077cc;
+  text-decoration: none;
+  font-weight: bold;
+}
+
+.find-out-more a:hover {
+  text-decoration: underline;
 }

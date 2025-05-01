@@ -6,7 +6,7 @@ function Home() {
   
   const [animals, setAnimals] = useState([]);
   const [searchItem, setSearchItem] = useState([]);
-  const [expandedId, setExpandedId] = useState([]);
+  const [expandedId, setExpandedId] = useState(null);
   
   useEffect(() => {
     axios
@@ -24,7 +24,11 @@ function Home() {
       </div>
   <div className="animal-list">
     {animals.map(animal => (
-      <div className="animal-card" key={animal.AnimalID}>
+      <div 
+      className={`animal-card ${expandedId === animal.AnimalID ? 'expanded' : ''}`} 
+      key={animal.AnimalID}
+      onClick={() => setExpandedId(expandedId === animal.AnimalID ? null : animal.AnimalID)}
+    >
       {animal.ImageURL && (
         <img 
           src={animal.ImageURL} 
@@ -43,6 +47,20 @@ function Home() {
       <p><strong>Breed:</strong> {animal.Breed}</p>
       <p><strong>Conservation Status:</strong> {animal.ConservationStatus}</p>
       <p><strong>Housing:</strong> {animal.Housing}</p>
+
+       {/* This part only shows when card is expanded */}
+  {expandedId === animal.AnimalID && (
+    <div className="find-out-more">
+      <p>Find out more about {animal.Breed}!</p>
+      <a 
+        href={`https://en.wikipedia.org/wiki/${encodeURIComponent(animal.Breed)}`} 
+        target="_blank" 
+        rel="noopener noreferrer"
+      >
+        Learn more on Wikipedia
+      </a>
+    </div>
+  )}
     </div>
     ))}
   </div>
